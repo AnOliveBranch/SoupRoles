@@ -1,6 +1,7 @@
 const {
     Client,
-    GatewayIntentBits
+    GatewayIntentBits,
+    EmbedBuilder
 } = require('discord.js');
 const {
     discordToken
@@ -13,5 +14,14 @@ const client = new Client({
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
+
+function makeEmbed(title, content, footer, color) {
+    return new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(content)
+        .setFooter(footer)
+        .setColor(color)
+        .build();
+}
 
 client.login(discordToken);
