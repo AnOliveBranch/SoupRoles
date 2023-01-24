@@ -33,11 +33,8 @@ client.on('interactionCreate', async (interaction) => {
 
         const embed = makeEmbed(title, content, footer, color);
 
-        let channel = interaction.options.getChannel('channel');
-        if (channel === null) {
-            channel = interaction.channel;
-        }
-
+        const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
+ 
         if (subcommand === 'create') {
             channel.send({ embeds: [embed] });
             interaction.reply({ content: 'Done!', ephemeral: true });
