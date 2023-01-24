@@ -82,6 +82,12 @@ const commands = [
                 )
                 .addStringOption(option =>
                     option
+                        .setName('id')
+                        .setDescription('Unique ID of the button')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
                         .setName('title')
                         .setDescription('Text of the button')
                         .setRequired(true)
@@ -101,6 +107,12 @@ const commands = [
                     option
                         .setName('message')
                         .setDescription('Message ID of message to add button to')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('id')
+                        .setDescription('Unique ID of the button')
                         .setRequired(true)
                 )
                 .addStringOption(option =>
@@ -134,8 +146,8 @@ const commands = [
                 )
                 .addStringOption(option =>
                     option
-                        .setName('title')
-                        .setDescription('Text of the button')
+                        .setName('id')
+                        .setDescription('Unique ID of the button')
                         .setRequired(true)
                 )
                 .addChannelOption(option =>
