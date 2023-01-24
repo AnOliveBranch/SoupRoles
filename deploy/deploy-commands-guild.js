@@ -117,12 +117,6 @@ const commands = [
                 )
                 .addStringOption(option =>
                     option
-                        .setName('oldtitle')
-                        .setDescription('Old text of the button')
-                        .setRequired(true)
-                )
-                .addStringOption(option =>
-                    option
                         .setName('newtitle')
                         .setDescription('New text of the button')
                         .setRequired(true)
