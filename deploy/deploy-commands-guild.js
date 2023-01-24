@@ -67,6 +67,83 @@ const commands = [
                         .setDescription('Hex color of the embed (no #)')
                         .setRequired(false)    
                 )
+        ),
+    new SlashCommandBuilder().setName('button')
+        .setDescription('Command for creating and updating buttons')
+        .addSubcommand(subcommand => 
+            subcommand
+                .setName('create')
+                .setDescription('Creates a button on a message')
+                .addStringOption(option =>
+                    option
+                        .setName('message')
+                        .setDescription('Message ID of message to add button to')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('title')
+                        .setDescription('Text of the button')
+                        .setRequired(true)
+                )
+                .addChannelOption(option =>
+                    option
+                        .setName('channel')
+                        .setDescription('Channel the message is in (defaults to current channel)')
+                        .setRequired(false)
+                )
+        )
+        .addSubcommand(subcommand => 
+            subcommand
+                .setName('update')
+                .setDescription('Updates a button on a message')
+                .addStringOption(option =>
+                    option
+                        .setName('message')
+                        .setDescription('Message ID of message to add button to')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('oldtitle')
+                        .setDescription('Old text of the button')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('newtitle')
+                        .setDescription('New text of the button')
+                        .setRequired(true)
+                )
+                .addChannelOption(option =>
+                    option
+                        .setName('channel')
+                        .setDescription('Channel the message is in (defaults to current channel)')
+                        .setRequired(false)
+                )
+        )
+        .addSubcommand(subcommand => 
+            subcommand
+                .setName('delete')
+                .setDescription('Deletes a button on a message')
+                .addStringOption(option =>
+                    option
+                        .setName('message')
+                        .setDescription('Message ID of message to add button to')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('title')
+                        .setDescription('Text of the button')
+                        .setRequired(true)
+                )
+                .addChannelOption(option =>
+                    option
+                        .setName('channel')
+                        .setDescription('Channel the message is in (defaults to current channel)')
+                        .setRequired(false)
+                )
         )
 ]
 .map(command => command.toJSON());
