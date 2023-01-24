@@ -106,7 +106,7 @@ const commands = [
                 .addStringOption(option =>
                     option
                         .setName('message')
-                        .setDescription('Message ID of message to add button to')
+                        .setDescription('Message ID of message to update button for')
                         .setRequired(true)
                 )
                 .addStringOption(option =>
@@ -135,7 +135,7 @@ const commands = [
                 .addStringOption(option =>
                     option
                         .setName('message')
-                        .setDescription('Message ID of message to add button to')
+                        .setDescription('Message ID of message to delete button from')
                         .setRequired(true)
                 )
                 .addStringOption(option =>
