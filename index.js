@@ -44,7 +44,7 @@ client.on('interactionCreate', async (interaction) => {
         } else if (subcommand === 'update') {
             const messageId = interaction.options.getString('message');
             channel.messages.fetch(messageId).then((message) => {
-                if (message.author !== client.user) {
+                if (message.author.id !== client.user.id) {
                     interaction.reply({ content: 'Error: Cannot edit a message sent by a different user', ephemeral: true });
                     return;
                 }
@@ -63,17 +63,28 @@ client.on('interactionCreate', async (interaction) => {
         const messageId = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
  
-        if (subcommand === 'create') {
-            const title = interaction.options.getString('title');
-
-            let button = makeButton(id, title);
-        } else if (subcommand === 'delete') {
-            const title = interaction.options.getString('title');
-        } else if (subcommand === 'update') {
-            const title = interaction.options.getString('newTitle');
-
-            let button = makeButton(id, title);
-        }
+        channel.messages.fetch(messageId).then((message) => {
+            console.log(message);
+            if (message.author.id !== client.user.id) {
+                interaction.reply({ content: 'Error: Cannot modify buttons on a message sent by a different user', ephemeral: true });
+                return;
+            }
+    
+            if (subcommand === 'create') {
+                const title = interaction.options.getString('title');
+    
+                let button = makeButton(buttonId, title);
+            } else if (subcommand === 'delete') {
+                const title = interaction.options.getString('title');
+            } else if (subcommand === 'update') {
+                const title = interaction.options.getString('newTitle');
+    
+                let button = makeButton(buttonId, title);
+            }
+        }).catch((error) => {
+            console.log(error);
+            interaction.reply({ content: `Error: Could not find message with ID ${messageId} in channel ${channel}`, ephemeral: true });
+        });
     }
 });
 
