@@ -1,7 +1,10 @@
 const {
     Client,
     GatewayIntentBits,
-    EmbedBuilder
+    EmbedBuilder,
+    ActionRowBuilder, 
+    ButtonBuilder, 
+    ButtonStyle
 } = require('discord.js');
 const {
     discordToken
@@ -52,6 +55,26 @@ client.on('interactionCreate', async (interaction) => {
             })
         }
     }
+
+    if (commandName === 'button') {
+        const subcommand = interaction.options.getSubcommand();
+
+        const buttonId = interaction.options.getString('id');
+        const messageId = interaction.options.getString('message');
+        const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
+ 
+        if (subcommand === 'create') {
+            const title = interaction.options.getString('title');
+
+            let button = makeButton(id, title);
+        } else if (subcommand === 'delete') {
+            const title = interaction.options.getString('title');
+        } else if (subcommand === 'update') {
+            const title = interaction.options.getString('newTitle');
+
+            let button = makeButton(id, title);
+        }
+    }
 });
 
 function makeEmbed(title, content, footer, color) {
@@ -60,6 +83,13 @@ function makeEmbed(title, content, footer, color) {
         .setDescription(content)
         .setFooter(footer)
         .setColor(color);
+}
+
+function makeButton(id, title) {
+    return new ButtonBuilder()
+        .setCustomId(id)
+        .setLabel(title)
+        .setStyle(ButtonStyle.Primary);
 }
 
 client.login(discordToken);
