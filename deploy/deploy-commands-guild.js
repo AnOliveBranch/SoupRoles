@@ -151,6 +151,23 @@ const commands = [
                         .setRequired(false)
                 )
         )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('get')
+                .setDescription('Gets all buttons on a message')
+                .addStringOption(option =>
+                    option
+                        .setName('message')
+                        .setDescription('Message ID of message to get buttons from')
+                        .setRequired(true)
+                )
+                .addChannelOption(option =>
+                    option
+                        .setName('channel')
+                        .setDescription('Channel the message is in (defaults to current channel)')
+                        .setRequired(false)
+                )
+        )
 ]
 .map(command => command.toJSON());
 
