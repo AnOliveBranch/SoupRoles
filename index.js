@@ -4,7 +4,8 @@ const {
     EmbedBuilder,
     ActionRowBuilder, 
     ButtonBuilder, 
-    ButtonStyle
+    ButtonStyle,
+    MessageComponentType
 } = require('discord.js');
 const {
     discordToken
@@ -63,8 +64,8 @@ client.on('interactionCreate', async (interaction) => {
         const messageId = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
  
-        channel.messages.fetch(messageId).then((message) => {
-            console.log(message);
+        channel.messages.fetch({ limit: 1, around: messageId, cache: false }).then((messages) => {
+            let message = messages.at(0);
             if (message.author.id !== client.user.id) {
                 interaction.reply({ content: 'Error: Cannot modify buttons on a message sent by a different user', ephemeral: true });
                 return;
@@ -72,14 +73,27 @@ client.on('interactionCreate', async (interaction) => {
     
             if (subcommand === 'create') {
                 const title = interaction.options.getString('title');
-    
+                let buttons = getButtons(message);
+
+                if (buttons.length >= 25) {
+                    interaction.reply({ content: 'Error: A message can have at most 25 buttons', ephemeral: true });
+                    return;
+                }
+
                 let button = makeButton(buttonId, title);
+                buttons.push(button);
+                let rows = buildComponents(buttons);
+                message.edit({ components: rows });
+                interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'delete') {
                 const title = interaction.options.getString('title');
             } else if (subcommand === 'update') {
-                const title = interaction.options.getString('newTitle');
+                const title = interaction.options.getString('newtitle');
     
                 let button = makeButton(buttonId, title);
+            } else if (subcommand === 'get') {
+                let components = message.components;
+                console.log(components);
             }
         }).catch((error) => {
             console.log(error);
@@ -101,6 +115,31 @@ function makeButton(id, title) {
         .setCustomId(id)
         .setLabel(title)
         .setStyle(ButtonStyle.Primary);
+}
+
+function getButtons(message) {
+    let buttons = [];
+    message.components.forEach(function (componentRow) {
+        componentRow.components.forEach(function (component) {
+            buttons.push(component);
+        });
+    });
+    return buttons;
+}
+
+function buildComponents(buttons) {
+    let rows = [];
+    for (let i = 0; i < buttons.length; i++) {
+        let row;
+        if (i % 5 === 0) {
+            row = new ActionRowBuilder();
+        } else {
+            row = rows[rows.length - 1];
+        }
+        row.addComponents(buttons[i]);
+        rows[i/5] = row;
+    }
+    return rows;
 }
 
 client.login(discordToken);
