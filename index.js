@@ -92,8 +92,12 @@ client.on('interactionCreate', async (interaction) => {
     
                 let button = makeButton(buttonId, title);
             } else if (subcommand === 'get') {
-                let components = message.components;
-                console.log(components);
+                const buttons = getButtons(message);
+                let newMsg = '';
+                buttons.forEach(function (button) {
+                    newMsg += `Button name: \`${button.label}\`, button ID: \`${button.customId}\`\n`;
+                });
+                interaction.reply({ content: newMsg, ephemeral: true });
             }
         }).catch((error) => {
             console.log(error);
