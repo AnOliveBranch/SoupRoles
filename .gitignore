@@ -323,3 +323,5 @@ $RECYCLE.BIN/
 
 # Don't commit discord token
 config.json
+# Don't commit user data
+data/
