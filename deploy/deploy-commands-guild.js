@@ -23,7 +23,7 @@ const commands = [
                 .addStringOption(option =>
                     option
                         .setName('color')
-                        .setDescription('Hex color of the embed (no #)')
+                        .setDescription('Hex or RGB color of the embed')
                         .setRequired(false)    
                 )
                 .addChannelOption(option =>
@@ -39,14 +39,14 @@ const commands = [
                 .setDescription('Updates an existing embed created by this bot')
                 .addStringOption(option =>
                     option
-                        .setName('content')
-                        .setDescription('Content of the embed')
+                        .setName('message')
+                        .setDescription('Message ID of the message to update')
                         .setRequired(true)    
                 )
                 .addStringOption(option =>
                     option
-                        .setName('message')
-                        .setDescription('Message ID of the message to update')
+                        .setName('content')
+                        .setDescription('Content of the embed')
                         .setRequired(true)    
                 )
                 .addChannelOption(option =>
@@ -64,7 +64,7 @@ const commands = [
                 .addStringOption(option =>
                     option
                         .setName('color')
-                        .setDescription('Hex color of the embed (no #)')
+                        .setDescription('Hex or RGB color of the embed')
                         .setRequired(false)    
                 )
         ),
