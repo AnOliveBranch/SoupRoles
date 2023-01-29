@@ -207,9 +207,54 @@ client.on('interactionCreate', async (interaction) => {
         });
     });
 
-    const component = buildMenuComponents(roles, interaction.member.roles.cache);
+    const component = buildMenuComponents(roles, interaction.member.roles.cache, buttonId);
 
     interaction.reply({ embeds: [embed], components: [component], ephemeral: true });
+});
+
+// Menu handler
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isStringSelectMenu()) {
+        return;
+    }
+
+    const selection = interaction.values;
+    const member = interaction.member;
+
+    // Get the list of role options for the interaction
+    const roleOptions = serverData.get(interaction.guild.id)['messages'][interaction.message.reference.messageId][interaction.customId]['roles'];
+
+    let addedRoles = '';
+    let removedRoles = '';
+    
+    await roleOptions.forEach((roleOptionId) => {
+        if (selection.includes(roleOptionId)) {
+            if (!member.roles.cache.has(roleOptionId)) {
+                addedRoles += `<@&${roleOptionId}> `;
+                member.roles.add(roleOptionId);
+            }
+        } else {
+            if (member.roles.cache.has(roleOptionId)) {
+                removedRoles +=`<@&${roleOptionId}> `;
+                member.roles.remove(roleOptionId);
+            }
+        }
+    });
+
+    if (addedRoles !== '' && removedRoles !== '') {
+        const response = makeEmbed(null, `Added roles: ${addedRoles}\nRemoved roles: ${removedRoles}`, null);
+        interaction.reply({ embeds: [response], ephemeral: true });
+    } else if (addedRoles === '') {
+        const response = makeEmbed(null, `Removed roles: ${removedRoles}`, null);
+        interaction.reply({ embeds: [response], ephemeral: true });
+    } else if (removedRoles === '') {
+        const response = makeEmbed(null, `Added roles: ${addedRoles}`, null);
+        interaction.reply({ embeds: [response], ephemeral: true });
+    } else {
+        const response = makeEmbed(null, `No changes were made`, null);
+        interaction.reply({ embeds: [response], ephemeral: true });
+    }
+    
 });
 
 // Returns a new embed
@@ -260,10 +305,10 @@ function getButtonIndex(buttons, buttonId) {
     return buttons.findIndex((button) => button.customId === buttonId);
 }
 
-function buildMenuComponents(roles, memberRoles) {
+function buildMenuComponents(roles, memberRoles, buttonId) {
     let row = new ActionRowBuilder();
     let menuBuilder = new StringSelectMenuBuilder()
-        .setCustomId('selector')
+        .setCustomId(buttonId)
         .setPlaceholder('Select role(s)')
         .setMaxValues(roles.length);
 
