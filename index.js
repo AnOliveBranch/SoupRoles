@@ -4,8 +4,7 @@ const {
     EmbedBuilder,
     ActionRowBuilder, 
     ButtonBuilder, 
-    ButtonStyle,
-    MessageComponentType
+    ButtonStyle
 } = require('discord.js');
 const {
     discordToken
