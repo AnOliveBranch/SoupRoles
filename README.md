@@ -50,3 +50,83 @@ Options
 Examples:
   - `/embed update message:1069342907129139291 content:New text title:New title`
   - `/embed update message:1069342907129139291 content:Other text in this embed color:231,90,63 channel:#roles`
+
+## Button Command
+
+Command for managing buttons on an embed message
+
+### /button create
+
+Used to create a new button on a message
+
+Options
+  - message
+    - The message ID of the message to place a button on, must be one created with this bot
+    - Required
+  - id
+    - The custom ID of the button you are creating
+    - Required
+  - title
+    - The text that will be displayed in the button
+    - Required
+  - channel
+    - The channel of the message to place a button on
+    - Not required, defaults to the current channel
+
+Examples:
+  - `/button create message:1069342907129139291 id:pronounButton title:Pronouns`
+  - `/button create message:1069342907129139291 id:this can have spaces title:Button Text channel:#roles`
+
+### /button delete
+
+Used to delete a button on a message
+
+Options
+  - message
+    - The message ID of the message to delete the button from
+    - Required
+  - id
+    - The custom ID of the button you are deleting
+    - Required
+  - channel
+    - The channel of the message to delete the button from
+    - Not required, defaults to the current channel
+
+Example:
+  - `/button delete message:1069342907129139291 id:pronounButton`
+
+### /button update
+
+Used to update the text on a button
+
+Options
+  - message
+    - The message ID of the message the button is on
+    - Required
+  - id
+    - The custom ID of the button you are editing
+    - Required
+  - newtitle
+    - The updated text that will be displayed in the button
+    - Required
+  - channel
+    - The channel of the message the button is on
+    - Not required, defaults to the current channel
+
+Example:
+  - `/button update message:1069342907129139291 id:pronounButton newtitle:Pick Pronouns`
+
+### /button get
+
+Used to get a list of buttons on a message. Useful for finding button IDs
+
+Options
+  - message
+    - The message ID of the message to get buttons for
+    - Required
+  - channel
+    - The channel of the message to get buttons for
+    - Not required, defaults to the current channel
+
+Example:
+  - `/button get message:1069342907129139291`
