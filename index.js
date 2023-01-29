@@ -86,6 +86,18 @@ client.on('interactionCreate', async (interaction) => {
                 interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'delete') {
                 const title = interaction.options.getString('title');
+                let buttons = getButtons(message);
+                
+                let buttonIndex = getButtonIndex(buttons, buttonId);
+                if (buttonIndex === -1) {
+                    interaction.reply({ content: `Error: Could not find button with ID ${buttonId} on message with ID ${messageId}. Use \`/button get\` to get a list of buttons on a message`, ephemeral: true });
+                    return;
+                }
+
+                buttons.splice(buttonIndex, 1);
+                let rows = buildComponents(buttons);
+                message.edit({ components: rows });
+                interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'update') {
                 const title = interaction.options.getString('newtitle');
     
@@ -105,6 +117,7 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
+// Returns a new embed
 function makeEmbed(title, content, footer, color) {
     return new EmbedBuilder()
         .setTitle(title)
@@ -113,6 +126,7 @@ function makeEmbed(title, content, footer, color) {
         .setColor(color);
 }
 
+// Returns a new button
 function makeButton(id, title) {
     return new ButtonBuilder()
         .setCustomId(id)
@@ -120,6 +134,7 @@ function makeButton(id, title) {
         .setStyle(ButtonStyle.Primary);
 }
 
+// Returns an array of buttons in a message
 function getButtons(message) {
     let buttons = [];
     message.components.forEach(function (componentRow) {
@@ -130,6 +145,7 @@ function getButtons(message) {
     return buttons;
 }
 
+// Returns an array of ActionRowBuilders, populated with the contents of the "buttons" array
 function buildComponents(buttons) {
     let rows = [];
     for (let i = 0; i < buttons.length; i++) {
@@ -143,6 +159,17 @@ function buildComponents(buttons) {
         rows[i/5] = row;
     }
     return rows;
+}
+
+// Returns the array index of button with ID buttonId in array buttons
+function getButtonIndex(buttons, buttonId) {
+    let index = -1;
+    for (let i = 0; i < buttons.length; i++) {
+        if (buttons[i].customId === buttonId) {
+            return i;
+        }
+    }
+    return index;
 }
 
 client.login(discordToken);
