@@ -207,7 +207,7 @@ client.on('interactionCreate', async (interaction) => {
         });
     });
 
-    const component = buildMenuComponents(roles);
+    const component = buildMenuComponents(roles, interaction.member.roles.cache);
 
     interaction.reply({ embeds: [embed], components: [component], ephemeral: true });
 });
@@ -266,7 +266,7 @@ function getButtonIndex(buttons, buttonId) {
     return index;
 }
 
-function buildMenuComponents(roles) {
+function buildMenuComponents(roles, memberRoles) {
     let row = new ActionRowBuilder();
     let menuBuilder = new StringSelectMenuBuilder()
         .setCustomId('selector')
@@ -274,13 +274,22 @@ function buildMenuComponents(roles) {
         .setMaxValues(roles.length);
 
     roles.forEach((role) => {
-        console.log(role);
-        menuBuilder.addOptions(
-            {
-                label: role.name,
-                value: role.id
-            }
-        );
+        if (memberRoles.has(role.id)) {
+            menuBuilder.addOptions(
+                {
+                    label: role.name,
+                    value: role.id,
+                    default: true
+                }
+            );
+        } else {
+            menuBuilder.addOptions(
+                {
+                    label: role.name,
+                    value: role.id
+                }
+            );
+        }
     });
 
     row.addComponents(menuBuilder);
