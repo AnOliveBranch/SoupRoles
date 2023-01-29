@@ -257,13 +257,7 @@ function buildButtonComponents(buttons) {
 
 // Returns the array index of button with ID buttonId in array buttons
 function getButtonIndex(buttons, buttonId) {
-    let index = -1;
-    for (let i = 0; i < buttons.length; i++) {
-        if (buttons[i].customId === buttonId) {
-            return i;
-        }
-    }
-    return index;
+    return buttons.findIndex((button) => button.customId === buttonId);
 }
 
 function buildMenuComponents(roles, memberRoles) {
