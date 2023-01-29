@@ -100,8 +100,20 @@ client.on('interactionCreate', async (interaction) => {
                 interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'update') {
                 const title = interaction.options.getString('newtitle');
-    
+                let buttons = getButtons(message);
+
+                let buttonIndex = getButtonIndex(buttons, buttonId);
+                if (buttonIndex === -1) {
+                    interaction.reply({ content: `Error: Could not find button with ID ${buttonId} on message with ID ${messageId}. Use \`/button get\` to get a list of buttons on a message`, ephemeral: true });
+                    return;
+                }
+
                 let button = makeButton(buttonId, title);
+                buttons[buttonIndex] = button;
+
+                let rows = buildComponents(buttons);
+                message.edit({ components: rows });
+                interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'get') {
                 const buttons = getButtons(message);
                 let newMsg = '';
