@@ -212,11 +212,6 @@ const commands = [
                                 .setName('color')
                                 .setDescription('Color of the embed')    
                         )
-                        .addChannelOption(option =>
-                            option
-                                .setName('channel')
-                                .setDescription('Channel the message is in')    
-                        )
                 )
                 .addSubcommand(subcommand =>
                     subcommand
@@ -250,11 +245,6 @@ const commands = [
                                 .setName('color')
                                 .setDescription('Color of the embed')    
                         )
-                        .addChannelOption(option =>
-                            option
-                                .setName('channel')
-                                .setDescription('Channel the message is in')    
-                        )
                 )
                 .addSubcommand(subcommand =>
                     subcommand
@@ -271,11 +261,6 @@ const commands = [
                                 .setName('button')
                                 .setDescription('Custom ID of the button to delete the embed for')
                                 .setRequired(true)    
-                        )
-                        .addChannelOption(option =>
-                            option
-                                .setName('channel')
-                                .setDescription('Channel the message is in')    
                         )
                 )
         )
@@ -305,11 +290,6 @@ const commands = [
                                 .setDescription('Role to add')
                                 .setRequired(true)    
                         )
-                        .addChannelOption(option =>
-                            option
-                                .setName('channel')
-                                .setDescription('Channel the message is in')    
-                        )
                 )
                 .addSubcommand(subcommand =>
                     subcommand
@@ -332,11 +312,6 @@ const commands = [
                                 .setName('role')
                                 .setDescription('Role to remove')
                                 .setRequired(true)    
-                        )
-                        .addChannelOption(option =>
-                            option
-                                .setName('channel')
-                                .setDescription('Channel the message is in')    
                         )
                 )   
         )
