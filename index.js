@@ -2,8 +2,8 @@ const {
     Client,
     GatewayIntentBits,
     EmbedBuilder,
-    ActionRowBuilder, 
-    ButtonBuilder, 
+    ActionRowBuilder,
+    ButtonBuilder,
     ButtonStyle,
     StringSelectMenuBuilder
 } = require('discord.js');
@@ -25,7 +25,7 @@ client.once('ready', () => {
             loadData(guild.id);
         });
     });
-    
+
     console.log(`Logged in as ${client.user.tag}`);
 });
 
@@ -63,7 +63,7 @@ client.on('interactionCreate', async (interaction) => {
         const embed = makeEmbed(title, content, color);
 
         const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
- 
+
         if (subcommand === 'create') {
             channel.send({ embeds: [embed] });
             interaction.reply({ content: 'Done!', ephemeral: true });
@@ -88,14 +88,14 @@ client.on('interactionCreate', async (interaction) => {
         const buttonId = interaction.options.getString('id');
         const messageId = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
- 
+
         channel.messages.fetch({ limit: 1, around: messageId, cache: false }).then((messages) => {
             let message = messages.at(0);
             if (message.author.id !== client.user.id) {
                 interaction.reply({ content: 'Error: Cannot modify buttons on a message sent by a different user', ephemeral: true });
                 return;
             }
-    
+
             if (subcommand === 'create') {
                 const title = interaction.options.getString('title');
                 let buttons = getButtons(message);
@@ -113,7 +113,7 @@ client.on('interactionCreate', async (interaction) => {
             } else if (subcommand === 'delete') {
                 const title = interaction.options.getString('title');
                 let buttons = getButtons(message);
-                
+
                 let buttonIndex = getButtonIndex(buttons, buttonId);
                 if (buttonIndex === -1) {
                     interaction.reply({ content: `Error: Could not find button with ID ${buttonId} on message with ID ${messageId}. Use \`/button get\` to get a list of buttons on a message`, ephemeral: true });
@@ -184,18 +184,11 @@ client.on('interactionCreate', async (interaction) => {
         return;
     }
 
-    let embedRules = buttonRules['embed'];
-
-    // Title and color are not required, null them if not present (EmbedBuilder accepts null)
-    if (embedRules['title'] === undefined) {
-        embedRules['title'] = null;
-    }
-    if (embedRules['color'] === undefined) {
-        embedRules['color'] = null;
+    // If there are no roles assigned to the button, do nothing
+    if (buttonRules['roles'] === undefined) {
+        return;
     }
 
-    const embed = makeEmbed(embedRules['title'], embedRules['text'], embedRules['color']);
-    
     let roles = [];
 
     await buttonRules['roles'].forEach((roleId) => {
@@ -209,7 +202,22 @@ client.on('interactionCreate', async (interaction) => {
 
     const component = buildMenuComponents(roles, interaction.member.roles.cache, buttonId);
 
-    interaction.reply({ embeds: [embed], components: [component], ephemeral: true });
+    let embedRules = buttonRules['embed'];
+
+    if (embedRules === undefined) {
+        // Title and color are not required, null them if not present (EmbedBuilder accepts null)
+        if (embedRules['title'] === undefined) {
+            embedRules['title'] = null;
+        }
+        if (embedRules['color'] === undefined) {
+            embedRules['color'] = null;
+        }
+
+        const embed = makeEmbed(embedRules['title'], embedRules['text'], embedRules['color']);
+        interaction.reply({ embeds: [embed], components: [component], ephemeral: true });
+    } else {
+        interaction.reply({ components: [component], ephemeral: true });
+    }  
 });
 
 // Menu handler
@@ -226,7 +234,7 @@ client.on('interactionCreate', async (interaction) => {
 
     let addedRoles = '';
     let removedRoles = '';
-    
+
     await roleOptions.forEach((roleOptionId) => {
         if (selection.includes(roleOptionId)) {
             if (!member.roles.cache.has(roleOptionId)) {
@@ -235,7 +243,7 @@ client.on('interactionCreate', async (interaction) => {
             }
         } else {
             if (member.roles.cache.has(roleOptionId)) {
-                removedRoles +=`<@&${roleOptionId}> `;
+                removedRoles += `<@&${roleOptionId}> `;
                 member.roles.remove(roleOptionId);
             }
         }
@@ -254,7 +262,7 @@ client.on('interactionCreate', async (interaction) => {
         const response = makeEmbed(null, `No changes were made`, null);
         interaction.reply({ embeds: [response], ephemeral: true });
     }
-    
+
 });
 
 // Returns a new embed
@@ -295,7 +303,7 @@ function buildButtonComponents(buttons) {
             row = rows[rows.length - 1];
         }
         row.addComponents(buttons[i]);
-        rows[i/5] = row;
+        rows[i / 5] = row;
     }
     return rows;
 }
