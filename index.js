@@ -431,6 +431,8 @@ client.on('interactionCreate', async (interaction) => {
     await roleOptions.forEach((roleOptionId) => {
         interaction.guild.roles.fetch(roleOptionId).then((role) => {
             if (role === null) {
+                // Automatically cleanup deleted or invalid roles
+                removeRole(interaction.guildId, interaction.message.reference.messageId, interaction.customId, roleOptionId);
                 return;
             }
             let position = role.position;
