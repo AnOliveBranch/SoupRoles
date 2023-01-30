@@ -254,26 +254,83 @@ client.on('interactionCreate', async (interaction) => {
                     const title = interaction.options.getString('title');
                     const content = interaction.options.getString('content');
                     const color = interaction.options.getString('color');
-    
+
                     const embed = makeEmbed(title, content, color);
                     setEmbed(interaction.guildId, messageId, buttonId, title, content, color);
-    
+
                     interaction.reply({ content: 'Done! Here\'s what the embed will look like', embeds: [embed], ephemeral: true });
                 } else if (subcommand === 'delete') {
                     setEmbed(interaction.guildId, messageId, buttonId, null, null, null);
                     interaction.reply({ content: 'Done!', ephemeral: true });
                 }
             }
-    
+
             if (group === 'assign') {
                 const role = interaction.options.getRole('role');
-    
+
                 if (subcommand === 'add') {
                     addRole(interaction.guildId, messageId, buttonId, role.id);
                     interaction.reply({ content: 'Done!', ephemeral: true });
                 } else if (subcommand === 'remove') {
                     removeRole(interaction.guildId, messageId, buttonId, role.id);
                     interaction.reply({ content: 'Done!', ephemeral: true });
+                }
+            }
+
+            if (group === null) {
+                if (subcommand === 'get') {
+                    const serverRules = serverData.get(interaction.guildId);
+
+                    // Make sure there's a messages list to handle
+                    if (!serverRules.hasOwnProperty('messages')) {
+                        interaction.reply({ content: 'This server has no set data', ephemeral: true });
+                        return;
+                    }
+
+                    const messageRules = serverRules['messages'][messageId];
+
+                    // Make sure the message has defined rules
+                    if (messageRules === undefined) {
+                        interaction.reply({ content: 'This message has no set data', ephemeral: true });
+                        return;
+                    }
+
+                    const buttonRules = messageRules[buttonId];
+
+                    // Make sure the button has defined rules
+                    if (buttonRules === undefined || (buttonRules['roles'] === undefined && buttonRules['embed'] === undefined)) {
+                        interaction.reply({ content: 'This button has no set data', ephemeral: true });
+                        return;
+                    }
+
+                    const embed = buttonRules['embed'];
+                    const roles = buttonRules['roles'];
+
+                    // Roles but no embed
+                    if (embed === undefined || (embed['title'] === null && embed['text'] === null && embed['color'] === null)) {
+                        let roleList = '';
+                        roles.forEach((roleId) => {
+                            roleList += `<@&${roleId}> `;
+                        });
+                        const embedResponse = makeEmbed('Roles Assigned', roleList, null);
+                        interaction.reply({ content: 'There is no embed assigned to this button', embeds: [embedResponse], ephemeral: true });
+                        return;
+                    }
+
+                    // Embed but no roles
+                    if (roles === undefined) {
+                        const embedResponse = makeEmbed(embed['title'], embed['text'], embed['color']);
+                        interaction.reply({ content: 'There are no roles assigned to this button\nAssigned embed', embeds: [embedResponse], ephemeral: true });
+                        return;
+                    }
+
+                    let roleList = '';
+                    roles.forEach((roleId) => {
+                        roleList += `<@&${roleId}> `;
+                    });
+                    const roleResponse = makeEmbed('Roles Assigned', roleList, null);
+                    const embedResponse = makeEmbed(embed['title'], embed['text'], embed['color']);
+                    interaction.reply({ content: 'Assigned embed and roles shown', embeds: [embedResponse, roleResponse], ephemeral: true });
                 }
             }
         }).catch((error) => {
