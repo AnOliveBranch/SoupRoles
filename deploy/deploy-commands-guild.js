@@ -171,6 +171,113 @@ const commands = [
                         .setDescription('Channel the message is in (defaults to current channel)')
                         .setRequired(false)
                 )
+        ),
+    new SlashCommandBuilder().setName('role')
+        .setDescription('Command for assigning roles to a button')
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+        .addSubcommandGroup(group => 
+            group
+                .setName('embed')
+                .setDescription('Modify embeds tied to a button')
+                .addSubcommand(subcommand =>
+                    subcommand
+                        .setName('create')
+                        .setDescription('Create an embed for a button')
+                        .addStringOption(option =>
+                            option
+                                .setName('message')
+                                .setDescription('Message ID of the message the button is on')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('button')
+                                .setDescription('Custom ID of the button to create an embed for')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('content')
+                                .setDescription('Body text of the embed')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('title')
+                                .setDescription('Title of the embed') 
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('color')
+                                .setDescription('Color of the embed')    
+                        )
+                        .addChannelOption(option =>
+                            option
+                                .setName('channel')
+                                .setDescription('Channel the message is in')    
+                        )
+                )
+                .addSubcommand(subcommand =>
+                    subcommand
+                        .setName('update')
+                        .setDescription('Update an embed for a button')
+                        .addStringOption(option =>
+                            option
+                                .setName('message')
+                                .setDescription('Message ID of the message the button is on')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('button')
+                                .setDescription('Custom ID of the button to update the embed for')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('content')
+                                .setDescription('New body text of the embed')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('title')
+                                .setDescription('Title of the embed') 
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('color')
+                                .setDescription('Color of the embed')    
+                        )
+                        .addChannelOption(option =>
+                            option
+                                .setName('channel')
+                                .setDescription('Channel the message is in')    
+                        )
+                )
+                .addSubcommand(subcommand =>
+                    subcommand
+                        .setName('delete')
+                        .setDescription('Delete an embed for a button')
+                        .addStringOption(option =>
+                            option
+                                .setName('message')
+                                .setDescription('Message ID of the message the button is on')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('button')
+                                .setDescription('Custom ID of the button to delete the embed for')
+                                .setRequired(true)    
+                        )
+                        .addChannelOption(option =>
+                            option
+                                .setName('channel')
+                                .setDescription('Channel the message is in')    
+                        )
+                )
         )
 ]
 .map(command => command.toJSON());
