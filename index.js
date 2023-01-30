@@ -217,7 +217,7 @@ client.on('interactionCreate', async (interaction) => {
         interaction.reply({ embeds: [embed], components: [component], ephemeral: true });
     } else {
         interaction.reply({ components: [component], ephemeral: true });
-    }  
+    }
 });
 
 // Menu handler
@@ -228,41 +228,59 @@ client.on('interactionCreate', async (interaction) => {
 
     const selection = interaction.values;
     const member = interaction.member;
+    const selfMember = interaction.guild.members.me;
+    const botHighest = selfMember.roles.highest.position;
+
+    if (!selfMember.permissions.has('ManageRoles')) {
+        interaction.reply({ content: 'Error: Missing Manage Roles permission, contact server administration', ephemeral: true });
+        return;
+    }
 
     // Get the list of role options for the interaction
     const roleOptions = serverData.get(interaction.guild.id)['messages'][interaction.message.reference.messageId][interaction.customId]['roles'];
 
+    let errors = '';
     let addedRoles = '';
     let removedRoles = '';
 
     await roleOptions.forEach((roleOptionId) => {
-        if (selection.includes(roleOptionId)) {
-            if (!member.roles.cache.has(roleOptionId)) {
-                addedRoles += `<@&${roleOptionId}> `;
-                member.roles.add(roleOptionId);
+        interaction.guild.roles.fetch(roleOptionId).then((role) => {
+            if (role === null) {
+                return;
             }
-        } else {
-            if (member.roles.cache.has(roleOptionId)) {
-                removedRoles += `<@&${roleOptionId}> `;
-                member.roles.remove(roleOptionId);
+            let position = role.position;
+            if (position > botHighest) {
+                errors += `Error: Cannot modify @${role.name} due to role hierarchy, contact server administration\n`;
+                return;
             }
-        }
+
+            if (selection.includes(roleOptionId)) {
+                if (!member.roles.cache.has(roleOptionId)) {
+                    addedRoles += `<@&${roleOptionId}> `;
+                    member.roles.add(roleOptionId);
+                }
+            } else {
+                if (member.roles.cache.has(roleOptionId)) {
+                    removedRoles += `<@&${roleOptionId}> `;
+                    member.roles.remove(roleOptionId);
+                }
+            }
+        });
     });
 
-    if (addedRoles !== '' && removedRoles !== '') {
-        const response = makeEmbed(null, `Added roles: ${addedRoles}\nRemoved roles: ${removedRoles}`, null);
-        interaction.reply({ embeds: [response], ephemeral: true });
-    } else if (addedRoles === '') {
-        const response = makeEmbed(null, `Removed roles: ${removedRoles}`, null);
-        interaction.reply({ embeds: [response], ephemeral: true });
-    } else if (removedRoles === '') {
-        const response = makeEmbed(null, `Added roles: ${addedRoles}`, null);
-        interaction.reply({ embeds: [response], ephemeral: true });
-    } else {
-        const response = makeEmbed(null, `No changes were made`, null);
-        interaction.reply({ embeds: [response], ephemeral: true });
+    let responseMsg = '';
+    if (errors !== '') {
+        responseMsg += errors;
+    }
+    if (addedRoles !== '') {
+        responseMsg += `Added roles: ${addedRoles}\n`;
+    }
+    if (removedRoles !== '') {
+        responseMsg += `Removed roles: ${removedRoles}`;
     }
 
+    const response = makeEmbed(null, responseMsg, null);
+    interaction.reply({ embeds: [response], ephemeral: true });
 });
 
 // Returns a new embed
