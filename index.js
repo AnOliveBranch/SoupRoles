@@ -44,6 +44,37 @@ async function saveData(guildId) {
     return fs.promises.writeFile(`./data/${guildId}.yml`, guildData, 'utf8');
 }
 
+function setEmbed(guildId, messageId, buttonId, title, text, color) {
+    let guildData = serverData.get(guildId);
+    let allMessageData = guildData['messages'];
+    if (allMessageData === undefined) {
+        allMessageData = {};
+    }
+    let thisMessageData = allMessageData[messageId];
+    if (thisMessageData === undefined) {
+        thisMessageData = {};
+    }
+    let buttonData = thisMessageData[buttonId];
+    if (buttonData === undefined) {
+        buttonData = {};
+    }
+    let embedData = {};
+    embedData['title'] = title;
+    embedData['text'] = text;
+    embedData['color'] = color;
+
+    buttonData['embed'] = embedData;
+    thisMessageData[buttonId] = buttonData;
+    allMessageData[messageId] = thisMessageData;
+    guildData['messages'] = allMessageData;
+    console.log(embedData);
+    console.log(buttonData);
+    console.log(thisMessageData);
+    console.log(allMessageData);
+    serverData.set(guildId, guildData);
+    saveData(guildId);
+}
+
 // Command handler
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) {
@@ -57,7 +88,6 @@ client.on('interactionCreate', async (interaction) => {
 
         const title = interaction.options.getString('title');
         const content = interaction.options.getString('content');
-
         const color = interaction.options.getString('color');
 
         const embed = makeEmbed(title, content, color);
@@ -153,6 +183,30 @@ client.on('interactionCreate', async (interaction) => {
             interaction.reply({ content: `Error: Could not find message with ID ${messageId} in channel ${channel}`, ephemeral: true });
         });
     }
+
+    if (commandName === 'role') {
+        const group = interaction.options.getSubcommandGroup();
+        const subcommand = interaction.options.getSubcommand();
+
+        const buttonId = interaction.options.getString('button');
+        const messageId = interaction.options.getString('message');
+
+        if (group === 'embed') {
+            if (subcommand === 'set') {
+                const title = interaction.options.getString('title');
+                const content = interaction.options.getString('content');
+                const color = interaction.options.getString('color');
+
+                const embed = makeEmbed(title, content, color);
+                setEmbed(interaction.guildId, messageId, buttonId, title, content, color);
+
+                interaction.reply({ content: 'Done! Here\'s what the embed will look like', embeds: [embed], ephemeral: true });
+            } else if (subcommand === 'delete') {
+                setEmbed(interaction.guildId, messageId, buttonId, null, null, null);
+                interaction.reply({ content: 'Done!', ephemeral: true });
+            }
+        }
+    }
 });
 
 // Button handler
@@ -163,7 +217,7 @@ client.on('interactionCreate', async (interaction) => {
 
     const messageId = interaction.message.id;
     const buttonId = interaction.customId;
-    const serverRules = serverData.get(interaction.guild.id);
+    const serverRules = serverData.get(interaction.guildId);
 
     // Make sure there's a messages list to handle
     if (!serverRules.hasOwnProperty('messages')) {
@@ -204,7 +258,7 @@ client.on('interactionCreate', async (interaction) => {
 
     let embedRules = buttonRules['embed'];
 
-    if (embedRules === undefined) {
+    if (embedRules !== undefined && embedRules['text'] !== null) {
         // Title and color are not required, null them if not present (EmbedBuilder accepts null)
         if (embedRules['title'] === undefined) {
             embedRules['title'] = null;
@@ -237,7 +291,7 @@ client.on('interactionCreate', async (interaction) => {
     }
 
     // Get the list of role options for the interaction
-    const roleOptions = serverData.get(interaction.guild.id)['messages'][interaction.message.reference.messageId][interaction.customId]['roles'];
+    const roleOptions = serverData.get(interaction.guildId)['messages'][interaction.message.reference.messageId][interaction.customId]['roles'];
 
     let errors = '';
     let addedRoles = '';
