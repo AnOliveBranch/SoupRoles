@@ -143,6 +143,10 @@ client.on('interactionCreate', async (interaction) => {
         const channel = interaction.channel;
 
         if (subcommand === 'create') {
+            if (!channel.permissionsFor(interaction.guild.members.me).has('SendMessages')) {
+                interaction.reply({ content: 'Error: No permission to send messages in this channel', ephemeral: true });
+                return;
+            }
             channel.send({ embeds: [embed] });
             interaction.reply({ content: 'Done!', ephemeral: true });
         } else if (subcommand === 'update') {
