@@ -130,3 +130,113 @@ Options
 
 Example:
   - `/button get message:1069342907129139291`
+
+## Role command
+
+### /role embed create
+
+Create an embed for a button
+
+Options
+  - message
+    - The message ID of the message to create an embed on
+    - Required
+  - button
+    - The ID of the button to create an embed on (use `/button get` to get the list of button IDs on a message)
+    - Required
+  - content
+    - The main body of the embed
+    - Requried
+  - title
+    - The title of the embed
+    - Not required, defaults to no title
+  - color
+    - The hexadecimal or RGB color code for the bar on the left of the embed
+    - Not required, defaults to dark grey
+  - channel
+    - The channel the message is in
+    - Not required, defaults to the current channel
+
+Example: 
+  - `/role embed create message:1069342907129139291 button:pronounButton content:Select your pronouns with this menu title:Pronoun Selector color:42be9a channel:#roles`
+
+### /role embed update
+
+Update an embed for a button
+
+Options
+  - message
+    - The message ID of the message to update an embed on
+    - Required
+  - button
+    - The ID of the button to update an embed on (use `/button get` to get the list of button IDs on a message)
+    - Required
+  - content
+    - The main body of the embed
+    - Requried
+  - title
+    - The title of the embed
+    - Not required, defaults to no title
+  - color
+    - The hexadecimal or RGB color code for the bar on the left of the embed
+    - Not required, defaults to dark grey
+  - channel
+    - The channel the message is in
+    - Not required, defaults to the current channel
+
+Example: 
+  - `/role embed update message:1069342907129139291 button:customButton content:Pronoun options`
+
+### /role embed delete
+
+Delete an embed for a button
+
+Options
+  - message
+    - The message ID of the message to delete an embed on
+    - Required
+  - button
+    - The ID of the button to delete an embed on (use `/button get` to get the list of button IDs on a message)
+    - Required
+  - channel
+    - The channel the message is in
+    - Not required, defaults to the current channel
+
+Example: 
+  - `/role embed delete message:1069342907129139291 button:customButton`
+
+### /role assign create
+
+Creates a new role assignment for a button
+
+Options
+  - message
+    - The message ID of the message holding the button
+    - Required
+  - button
+    - The ID of the button to assign a new role to (use `/button get` to get the list of button IDs on a message)
+    - Required
+  - role
+    - The role to assign
+    - Required
+  - channel
+    - The channel the message is in
+    - Not required, defaults to the current channel
+
+### /role assign delete
+
+Deletes an existing role assignment for a button
+
+Options
+  - message
+    - The message ID of the message holding the button
+    - Required
+  - button
+    - The ID of the button to delete a role on (use `/button get` to get the list of button IDs on a message)
+    - Required
+  - role
+    - The role to delete
+    - Required
+  - channel
+    - The channel the message is in
+    - Not required, defaults to the current channel
