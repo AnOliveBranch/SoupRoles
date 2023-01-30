@@ -153,12 +153,9 @@ Options
   - color
     - The hexadecimal or RGB color code for the bar on the left of the embed
     - Not required, defaults to dark grey
-  - channel
-    - The channel the message is in
-    - Not required, defaults to the current channel
 
 Example: 
-  - `/role embed create message:1069342907129139291 button:pronounButton content:Select your pronouns with this menu title:Pronoun Selector color:42be9a channel:#roles`
+  - `/role embed create message:1069342907129139291 button:pronounButton content:Select your pronouns with this menu title:Pronoun Selector color:42be9a`
 
 ### /role embed update
 
@@ -180,9 +177,6 @@ Options
   - color
     - The hexadecimal or RGB color code for the bar on the left of the embed
     - Not required, defaults to dark grey
-  - channel
-    - The channel the message is in
-    - Not required, defaults to the current channel
 
 Example: 
   - `/role embed update message:1069342907129139291 button:customButton content:Pronoun options`
@@ -198,9 +192,6 @@ Options
   - button
     - The ID of the button to delete an embed on (use `/button get` to get the list of button IDs on a message)
     - Required
-  - channel
-    - The channel the message is in
-    - Not required, defaults to the current channel
 
 Example: 
   - `/role embed delete message:1069342907129139291 button:customButton`
@@ -219,9 +210,6 @@ Options
   - role
     - The role to assign
     - Required
-  - channel
-    - The channel the message is in
-    - Not required, defaults to the current channel
 
 Example:
   - `/role assign create message:1069342907129139291 button:pronounButton role:@She/Her`
@@ -240,9 +228,6 @@ Options
   - role
     - The role to delete
     - Required
-  - channel
-    - The channel the message is in
-    - Not required, defaults to the current channel
 
 Example:
-  - `/role assign delete message:1069342907129139291 button:pronounButton role:@They/Them channel:#roles`
+  - `/role assign delete message:1069342907129139291 button:pronounButton role:@They/Them`
