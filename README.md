@@ -10,6 +10,8 @@ Finally, add some roles to that button using [/role assign add](#role-assign-add
 
 Optionally, add an embed to the button as well using [/role embed set](#role-embed-set) to give your users more information about the role dropdown
 
+A single message can have multiple buttons, up to 25. This is a limitation of Discord itself. Each button can be used for its own role menu, allowing for up to 25 different role menus on a single message.
+
 # Command Usage
 
 ## Embed Command
