@@ -237,7 +237,7 @@ const commands = [
                 .setDescription('Modify roles tied to a button')
                 .addSubcommand(subcommand =>
                     subcommand
-                        .setName('create')
+                        .setName('add')
                         .setDescription('Add a role to a button\'s list')
                         .addStringOption(option =>
                             option
@@ -260,7 +260,7 @@ const commands = [
                 )
                 .addSubcommand(subcommand =>
                     subcommand
-                        .setName('delete')
+                        .setName('remove')
                         .setDescription('Remove a role from a button\'s list')
                         .addStringOption(option =>
                             option

@@ -172,7 +172,7 @@ Options
 Example: 
   - `/role embed delete message:1069342907129139291 button:customButton`
 
-### /role assign create
+### /role assign add
 
 Creates a new role assignment for a button
 
@@ -188,22 +188,22 @@ Options
     - Required
 
 Example:
-  - `/role assign create message:1069342907129139291 button:pronounButton role:@She/Her`
+  - `/role assign add message:1069342907129139291 button:pronounButton role:@She/Her`
 
-### /role assign delete
+### /role assign remove
 
-Deletes an existing role assignment for a button
+Removes an existing role assignment for a button
 
 Options
   - message
     - The message ID of the message holding the button
     - Required
   - button
-    - The ID of the button to delete a role on (use `/button get` to get the list of button IDs on a message)
+    - The ID of the button to remove a role on (use `/button get` to get the list of button IDs on a message)
     - Required
   - role
-    - The role to delete
+    - The role to remove
     - Required
 
 Example:
-  - `/role assign delete message:1069342907129139291 button:pronounButton role:@They/Them`
+  - `/role assign remove message:1069342907129139291 button:pronounButton role:@They/Them`
