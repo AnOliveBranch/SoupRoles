@@ -223,6 +223,9 @@ Options
     - The channel the message is in
     - Not required, defaults to the current channel
 
+Example:
+  - `/role assign create message:1069342907129139291 button:pronounButton role:@She/Her`
+
 ### /role assign delete
 
 Deletes an existing role assignment for a button
@@ -240,3 +243,6 @@ Options
   - channel
     - The channel the message is in
     - Not required, defaults to the current channel
+
+Example:
+  - `/role assign delete message:1069342907129139291 button:pronounButton role:@They/Them channel:#roles`
