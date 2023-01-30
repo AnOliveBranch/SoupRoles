@@ -148,7 +148,7 @@ client.on('interactionCreate', async (interaction) => {
             } else if (subcommand === 'get') {
                 const buttons = getButtons(message);
                 let newMsg = '';
-                buttons.forEach(function (button) {
+                buttons.forEach((button) => {
                     newMsg += `Button name: \`${button.label}\`, button ID: \`${button.customId}\`\n`;
                 });
                 interaction.reply({ content: newMsg, ephemeral: true });
