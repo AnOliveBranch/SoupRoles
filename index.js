@@ -478,7 +478,7 @@ client.on('interactionCreate', async (interaction) => {
 function makeEmbed(title, content, color) {
     return new EmbedBuilder()
         .setTitle(title)
-        .setDescription(content)
+        .setDescription(content.replaceAll('\\n', '\n\u200B'))
         .setColor(color);
 }
 

@@ -22,6 +22,8 @@ Command used to create and update embed messages with the bot
 
 Used to create a new embed message
 
+Note: Command fields do not support newlines. Use `\n` to create a newline in your embed
+
 Options
   - content
     - The main body of the embed
@@ -132,6 +134,8 @@ Example:
 ### /role embed set
 
 Set an embed for a button. Creates a new one if it doesn't exist, or replaces an existing one
+
+Note: Command fields do not support newlines. Use `\n` to create a newline in your embed
 
 Options
   - message
