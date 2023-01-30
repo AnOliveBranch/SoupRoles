@@ -1,9 +1,11 @@
-const { REST, SlashCommandBuilder, Routes } = require('discord.js');
+const { REST, SlashCommandBuilder, PermissionFlagsBits, Routes } = require('discord.js');
 const { clientId, guildId, discordToken } = require('../config.json');
 
 const commands = [
     new SlashCommandBuilder().setName('embed')
         .setDescription('Command for creating and updating embeds')
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('create')
@@ -70,6 +72,8 @@ const commands = [
         ),
     new SlashCommandBuilder().setName('button')
         .setDescription('Command for creating and updating buttons')
+        .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addSubcommand(subcommand => 
             subcommand
                 .setName('create')

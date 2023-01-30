@@ -50,11 +50,6 @@ client.on('interactionCreate', async (interaction) => {
         return;
     }
 
-    if (!interaction.inGuild()) {
-        interaction.reply({ content: 'This bot does not support DMs', ephemeral: true });
-        return;
-    }
-
     const { commandName } = interaction;
 
     if (commandName === 'embed') {
