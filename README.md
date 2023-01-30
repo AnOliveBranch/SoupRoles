@@ -189,3 +189,18 @@ Options
 
 Example:
   - `/role assign remove message:1069342907129139291 button:pronounButton role:@They/Them`
+
+### /role get
+
+Gets currently set information for the button (assigned embed and roles)
+
+Options
+  - message
+    - The message ID of the message holding the button
+    - Required
+  - button
+    - The ID of the button to remove a role on (use `/button get` to get the list of button IDs on a message)
+    - Required
+
+Example:
+  - `/role get message:1069342907129139291 button:pronounButton`

@@ -246,6 +246,23 @@ const commands = [
                         )
                 )   
         )
+        .addSubcommand(subcommand => 
+            subcommand
+                .setName('get')
+                .setDescription('Gets the current role settings for a button')
+                .addStringOption(option =>
+                    option
+                        .setName('message')
+                        .setDescription('Message ID of the message the button is on')
+                        .setRequired(true)    
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('button')
+                        .setDescription('Custom ID of the button to remove a role from')
+                        .setRequired(true)    
+                )
+        )
 ]
 .map(command => command.toJSON());
 
