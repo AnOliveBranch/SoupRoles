@@ -135,14 +135,14 @@ Example:
 
 ### /role embed create
 
-Create an embed for a button
+Set an embed for a button. Creates a new one if it doesn't exist, or replaces an existing one
 
 Options
   - message
-    - The message ID of the message to create an embed on
+    - The message ID of the message to set an embed on
     - Required
   - button
-    - The ID of the button to create an embed on (use `/button get` to get the list of button IDs on a message)
+    - The ID of the button to create an set on (use `/button get` to get the list of button IDs on a message)
     - Required
   - content
     - The main body of the embed
@@ -155,31 +155,7 @@ Options
     - Not required, defaults to dark grey
 
 Example: 
-  - `/role embed create message:1069342907129139291 button:pronounButton content:Select your pronouns with this menu title:Pronoun Selector color:42be9a`
-
-### /role embed update
-
-Update an embed for a button
-
-Options
-  - message
-    - The message ID of the message to update an embed on
-    - Required
-  - button
-    - The ID of the button to update an embed on (use `/button get` to get the list of button IDs on a message)
-    - Required
-  - content
-    - The main body of the embed
-    - Requried
-  - title
-    - The title of the embed
-    - Not required, defaults to no title
-  - color
-    - The hexadecimal or RGB color code for the bar on the left of the embed
-    - Not required, defaults to dark grey
-
-Example: 
-  - `/role embed update message:1069342907129139291 button:customButton content:Pronoun options`
+  - `/role embed set message:1069342907129139291 button:pronounButton content:Select your pronouns with this menu title:Pronoun Selector color:42be9a`
 
 ### /role embed delete
 
