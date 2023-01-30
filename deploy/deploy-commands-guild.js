@@ -28,12 +28,6 @@ const commands = [
                         .setDescription('Hex or RGB color of the embed')
                         .setRequired(false)    
                 )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel to post the embed in (defaults to current channel)')
-                        .setRequired(false)
-                )
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -50,12 +44,6 @@ const commands = [
                         .setName('content')
                         .setDescription('Content of the embed')
                         .setRequired(true)    
-                )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel the message is in (defaults to current channel)')
-                        .setRequired(false)
                 )
                 .addStringOption(option =>
                     option
@@ -96,12 +84,6 @@ const commands = [
                         .setDescription('Text of the button')
                         .setRequired(true)
                 )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel the message is in (defaults to current channel)')
-                        .setRequired(false)
-                )
         )
         .addSubcommand(subcommand => 
             subcommand
@@ -125,12 +107,6 @@ const commands = [
                         .setDescription('New text of the button')
                         .setRequired(true)
                 )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel the message is in (defaults to current channel)')
-                        .setRequired(false)
-                )
         )
         .addSubcommand(subcommand => 
             subcommand
@@ -148,12 +124,6 @@ const commands = [
                         .setDescription('Unique ID of the button')
                         .setRequired(true)
                 )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel the message is in (defaults to current channel)')
-                        .setRequired(false)
-                )
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -164,12 +134,6 @@ const commands = [
                         .setName('message')
                         .setDescription('Message ID of message to get buttons from')
                         .setRequired(true)
-                )
-                .addChannelOption(option =>
-                    option
-                        .setName('channel')
-                        .setDescription('Channel the message is in (defaults to current channel)')
-                        .setRequired(false)
                 )
         ),
     new SlashCommandBuilder().setName('role')

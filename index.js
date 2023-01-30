@@ -140,7 +140,7 @@ client.on('interactionCreate', async (interaction) => {
 
         const embed = makeEmbed(title, content, color);
 
-        const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
+        const channel = interaction.channel;
 
         if (subcommand === 'create') {
             channel.send({ embeds: [embed] });
@@ -155,7 +155,7 @@ client.on('interactionCreate', async (interaction) => {
                 message.edit({ embeds: [embed] });
                 interaction.reply({ content: 'Done!', ephemeral: true });
             }).catch(() => {
-                interaction.reply({ content: `Error: Could not find message with ID ${messageId} in channel ${channel}`, ephemeral: true })
+                interaction.reply({ content: `Error: Could not find message with ID ${messageId}`, ephemeral: true })
             })
         }
     }
@@ -165,7 +165,7 @@ client.on('interactionCreate', async (interaction) => {
 
         const buttonId = interaction.options.getString('id');
         const messageId = interaction.options.getString('message');
-        const channel = interaction.options.getChannel('channel') === null ? interaction.channel : interaction.options.getChannel('channel');
+        const channel = interaction.channel;
 
         channel.messages.fetch({ limit: 1, around: messageId, cache: false }).then((messages) => {
             let message = messages.at(0);
@@ -228,7 +228,7 @@ client.on('interactionCreate', async (interaction) => {
             }
         }).catch((error) => {
             console.log(error);
-            interaction.reply({ content: `Error: Could not find message with ID ${messageId} in channel ${channel}`, ephemeral: true });
+            interaction.reply({ content: `Error: Could not find message with ID ${messageId}`, ephemeral: true });
         });
     }
 

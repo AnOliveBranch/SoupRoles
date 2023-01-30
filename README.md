@@ -18,12 +18,9 @@ Options
   - color
     - The hexadecimal or RGB color code for the bar on the left of the embed
     - Not required, defaults to dark grey
-  - channel
-    - The channel to post the embed in
-    - Not required, defaults to the current channel
 
 Examples: 
-  - `/embed create content:Select your roles here! title:Role Selector color:42be9a channel:#roles`
+  - `/embed create content:Select your roles here! title:Role Selector color:42be9a`
   - `/embed create content:Select some roles`
 
 ### /embed update
@@ -43,13 +40,10 @@ Options
   - color
     - The new hexadecimal or RGB color code for the bar on the left of the embed
     - Not required, defaults to dark grey
-  - channel
-    - The channel the existing embed is in
-    - Not required, defaults to the current channel
 
 Examples:
   - `/embed update message:1069342907129139291 content:New text title:New title`
-  - `/embed update message:1069342907129139291 content:Other text in this embed color:231,90,63 channel:#roles`
+  - `/embed update message:1069342907129139291 content:Other text in this embed color:231,90,63`
 
 ## Button Command
 
@@ -69,13 +63,10 @@ Options
   - title
     - The text that will be displayed in the button
     - Required
-  - channel
-    - The channel of the message to place a button on
-    - Not required, defaults to the current channel
 
 Examples:
   - `/button create message:1069342907129139291 id:pronounButton title:Pronouns`
-  - `/button create message:1069342907129139291 id:this can have spaces title:Button Text channel:#roles`
+  - `/button create message:1069342907129139291 id:this can have spaces title:Button Text`
 
 ### /button delete
 
@@ -88,9 +79,6 @@ Options
   - id
     - The custom ID of the button you are deleting
     - Required
-  - channel
-    - The channel of the message to delete the button from
-    - Not required, defaults to the current channel
 
 Example:
   - `/button delete message:1069342907129139291 id:pronounButton`
@@ -109,9 +97,6 @@ Options
   - newtitle
     - The updated text that will be displayed in the button
     - Required
-  - channel
-    - The channel of the message the button is on
-    - Not required, defaults to the current channel
 
 Example:
   - `/button update message:1069342907129139291 id:pronounButton newtitle:Pick Pronouns`
@@ -124,9 +109,6 @@ Options
   - message
     - The message ID of the message to get buttons for
     - Required
-  - channel
-    - The channel of the message to get buttons for
-    - Not required, defaults to the current channel
 
 Example:
   - `/button get message:1069342907129139291`
