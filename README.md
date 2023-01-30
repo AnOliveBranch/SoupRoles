@@ -1,3 +1,15 @@
+# Getting Started
+
+[Click here](https://discord.com/api/oauth2/authorize?client_id=1069718385258156096&permissions=268437504&scope=bot) to add the bot to your server. It requires the `Manage Roles` and `Send Messages` permissions. Make sure the bot's highest role is above any roles you want it to be able to assign in the role hierarchy. The bot will also need permission to send messages in any channel you want to create an embed in. 
+
+Start by making an embed, using the [/embed create](#embed-create) command
+
+Then create a button on that embed using [/button create](#button-create)
+
+Finally, add some roles to that button using [/role assign add](#role-assign-add)
+
+Optionally, add an embed to the button as well using [/role embed set](#role-embed-set) to give your users more information about the role dropdown
+
 # Command Usage
 
 ## Embed Command
@@ -115,7 +127,7 @@ Example:
 
 ## Role command
 
-### /role embed create
+### /role embed set
 
 Set an embed for a button. Creates a new one if it doesn't exist, or replaces an existing one
 
