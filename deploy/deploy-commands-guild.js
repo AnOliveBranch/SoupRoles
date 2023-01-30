@@ -279,6 +279,67 @@ const commands = [
                         )
                 )
         )
+        .addSubcommandGroup(group =>
+            group
+                .setName('assign')
+                .setDescription('Modify roles tied to a button')
+                .addSubcommand(subcommand =>
+                    subcommand
+                        .setName('create')
+                        .setDescription('Add a role to a button\'s list')
+                        .addStringOption(option =>
+                            option
+                                .setName('message')
+                                .setDescription('Message ID of the message the button is on')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('button')
+                                .setDescription('Custom ID of the button to add a role to')
+                                .setRequired(true)    
+                        )
+                        .addRoleOption(option =>
+                            option
+                                .setName('role')
+                                .setDescription('Role to add')
+                                .setRequired(true)    
+                        )
+                        .addChannelOption(option =>
+                            option
+                                .setName('channel')
+                                .setDescription('Channel the message is in')    
+                        )
+                )
+                .addSubcommand(subcommand =>
+                    subcommand
+                        .setName('delete')
+                        .setDescription('Remove a role from a button\'s list')
+                        .addStringOption(option =>
+                            option
+                                .setName('message')
+                                .setDescription('Message ID of the message the button is on')
+                                .setRequired(true)    
+                        )
+                        .addStringOption(option =>
+                            option
+                                .setName('button')
+                                .setDescription('Custom ID of the button to remove a role from')
+                                .setRequired(true)    
+                        )
+                        .addRoleOption(option =>
+                            option
+                                .setName('role')
+                                .setDescription('Role to remove')
+                                .setRequired(true)    
+                        )
+                        .addChannelOption(option =>
+                            option
+                                .setName('channel')
+                                .setDescription('Channel the message is in')    
+                        )
+                )   
+        )
 ]
 .map(command => command.toJSON());
 
