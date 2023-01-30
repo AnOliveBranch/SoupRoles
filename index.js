@@ -75,6 +75,54 @@ function setEmbed(guildId, messageId, buttonId, title, text, color) {
     saveData(guildId);
 }
 
+function addRole(guildId, messageId, buttonId, roleId) {
+    let guildData = serverData.get(guildId);
+    let allMessageData = guildData['messages'];
+    if (allMessageData === undefined) {
+        allMessageData = {};
+    }
+    let thisMessageData = allMessageData[messageId];
+    if (thisMessageData === undefined) {
+        thisMessageData = {};
+    }
+    let buttonData = thisMessageData[buttonId];
+    if (buttonData === undefined) {
+        buttonData = {};
+    }
+    let roleData = buttonData['roles'];
+    if (roleData === undefined) {
+        roleData = [];
+    }
+    roleData.push(roleId);
+
+    buttonData['roles'] = roleData;
+    thisMessageData[buttonId] = buttonData;
+    allMessageData[messageId] = thisMessageData;
+    guildData['messages'] = allMessageData;
+    serverData.set(guildId, guildData);
+    saveData(guildId);
+}
+
+function removeRole(guildId, messageId, buttonId, roleId) {
+    let guildData = serverData.get(guildId);
+    let allMessageData = guildData['messages'];
+    let thisMessageData = allMessageData[messageId];
+    let buttonData = thisMessageData[buttonId];
+    let roleData = buttonData['roles'];
+
+    const roleIndex = roleData.indexOf(roleId);
+    if (roleIndex !== -1) {
+        roleData.splice(roleIndex, 1);
+    }
+
+    buttonData['roles'] = roleData;
+    thisMessageData[buttonId] = buttonData;
+    allMessageData[messageId] = thisMessageData;
+    guildData['messages'] = allMessageData;
+    serverData.set(guildId, guildData);
+    saveData(guildId);
+}
+
 // Command handler
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) {
@@ -203,6 +251,18 @@ client.on('interactionCreate', async (interaction) => {
                 interaction.reply({ content: 'Done! Here\'s what the embed will look like', embeds: [embed], ephemeral: true });
             } else if (subcommand === 'delete') {
                 setEmbed(interaction.guildId, messageId, buttonId, null, null, null);
+                interaction.reply({ content: 'Done!', ephemeral: true });
+            }
+        }
+
+        if (group === 'assign') {
+            const role = interaction.options.getRole('role');
+
+            if (subcommand === 'add') {
+                addRole(interaction.guildId, messageId, buttonId, role.id);
+                interaction.reply({ content: 'Done!', ephemeral: true });
+            } else if (subcommand === 'remove') {
+                removeRole(interaction.guildId, messageId, buttonId, role.id);
                 interaction.reply({ content: 'Done!', ephemeral: true });
             }
         }
@@ -390,7 +450,8 @@ function buildMenuComponents(roles, memberRoles, buttonId) {
     let menuBuilder = new StringSelectMenuBuilder()
         .setCustomId(buttonId)
         .setPlaceholder('Select role(s)')
-        .setMaxValues(roles.length);
+        .setMaxValues(roles.length)
+        .setMinValues(0);
 
     roles.forEach((role) => {
         if (memberRoles.has(role.id)) {
