@@ -189,7 +189,6 @@ client.on('interactionCreate', async (interaction) => {
                 message.edit({ components: rows });
                 interaction.reply({ content: 'Done!', ephemeral: true });
             } else if (subcommand === 'delete') {
-                const title = interaction.options.getString('title');
                 let buttons = getButtons(message);
 
                 let buttonIndex = getButtonIndex(buttons, buttonId);
@@ -238,34 +237,49 @@ client.on('interactionCreate', async (interaction) => {
 
         const buttonId = interaction.options.getString('button');
         const messageId = interaction.options.getString('message');
+        const channel = interaction.channel;
 
-        if (group === 'embed') {
-            if (subcommand === 'set') {
-                const title = interaction.options.getString('title');
-                const content = interaction.options.getString('content');
-                const color = interaction.options.getString('color');
+        channel.messages.fetch({ limit: 1, around: messageId, cache: false }).then((messages) => {
+            let message = messages.at(0);
+            let buttons = getButtons(message);
 
-                const embed = makeEmbed(title, content, color);
-                setEmbed(interaction.guildId, messageId, buttonId, title, content, color);
-
-                interaction.reply({ content: 'Done! Here\'s what the embed will look like', embeds: [embed], ephemeral: true });
-            } else if (subcommand === 'delete') {
-                setEmbed(interaction.guildId, messageId, buttonId, null, null, null);
-                interaction.reply({ content: 'Done!', ephemeral: true });
+            let buttonIndex = getButtonIndex(buttons, buttonId);
+            if (buttonIndex === -1) {
+                interaction.reply({ content: `Error: Could not find button with ID ${buttonId} on message with ID ${messageId}. Use \`/button get\` to get a list of buttons on a message`, ephemeral: true });
+                return;
             }
-        }
 
-        if (group === 'assign') {
-            const role = interaction.options.getRole('role');
-
-            if (subcommand === 'add') {
-                addRole(interaction.guildId, messageId, buttonId, role.id);
-                interaction.reply({ content: 'Done!', ephemeral: true });
-            } else if (subcommand === 'remove') {
-                removeRole(interaction.guildId, messageId, buttonId, role.id);
-                interaction.reply({ content: 'Done!', ephemeral: true });
+            if (group === 'embed') {
+                if (subcommand === 'set') {
+                    const title = interaction.options.getString('title');
+                    const content = interaction.options.getString('content');
+                    const color = interaction.options.getString('color');
+    
+                    const embed = makeEmbed(title, content, color);
+                    setEmbed(interaction.guildId, messageId, buttonId, title, content, color);
+    
+                    interaction.reply({ content: 'Done! Here\'s what the embed will look like', embeds: [embed], ephemeral: true });
+                } else if (subcommand === 'delete') {
+                    setEmbed(interaction.guildId, messageId, buttonId, null, null, null);
+                    interaction.reply({ content: 'Done!', ephemeral: true });
+                }
             }
-        }
+    
+            if (group === 'assign') {
+                const role = interaction.options.getRole('role');
+    
+                if (subcommand === 'add') {
+                    addRole(interaction.guildId, messageId, buttonId, role.id);
+                    interaction.reply({ content: 'Done!', ephemeral: true });
+                } else if (subcommand === 'remove') {
+                    removeRole(interaction.guildId, messageId, buttonId, role.id);
+                    interaction.reply({ content: 'Done!', ephemeral: true });
+                }
+            }
+        }).catch((error) => {
+            console.log(error);
+            interaction.reply({ content: `Error: Could not find message with ID ${messageId}`, ephemeral: true });
+        });
     }
 });
 
