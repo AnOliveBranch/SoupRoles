@@ -398,6 +398,7 @@ client.on('interactionCreate', async (interaction) => {
 
     // Make sure there's a messages list to handle
     if (!serverRules.hasOwnProperty('messages')) {
+        interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
         return;
     }
 
@@ -405,6 +406,7 @@ client.on('interactionCreate', async (interaction) => {
 
     // Make sure the message has defined rules
     if (messageRules === undefined) {
+        interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
         return;
     }
 
@@ -412,11 +414,13 @@ client.on('interactionCreate', async (interaction) => {
 
     // Make sure the button has defined rules
     if (buttonRules === undefined) {
+        interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
         return;
     }
 
     // If there are no roles assigned to the button, do nothing
     if (buttonRules['roles'] === undefined) {
+        interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
         return;
     }
 
