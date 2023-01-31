@@ -516,6 +516,10 @@ client.on('interactionCreate', async (interaction) => {
         responseMsg += `Removed roles: ${removedRoles}`;
     }
 
+    if (responseMsg === '') {
+        return;
+    }
+
     const response = makeEmbed(null, responseMsg, null);
     interaction.reply({ embeds: [response], ephemeral: true });
 });
