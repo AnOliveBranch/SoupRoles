@@ -136,6 +136,27 @@ function getRoleCount(guildId, messageId, buttonId) {
     }
 }
 
+function getRoles(guildId, messageId, buttonId) {
+    let guildData = serverData.get(guildId);
+    let allMessageData = guildData['messages'];
+    if (allMessageData === undefined) {
+        return [];
+    }
+    let thisMessageData = allMessageData[messageId];
+    if (thisMessageData === undefined) {
+        return [];
+    }
+    let buttonData = thisMessageData[buttonId];
+    if (buttonData === undefined) {
+        return [];
+    }
+    let roleData = buttonData['roles'];
+    if (roleData === undefined) {
+        return [];
+    }
+    return roleData;
+}
+
 // Command handler
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) {
@@ -288,6 +309,10 @@ client.on('interactionCreate', async (interaction) => {
                 if (subcommand === 'add') {
                     if (getRoleCount(interaction.guildId, messageId, buttonId) >= 25) {
                         interaction.reply({ content: 'Error: Maximum of 25 roles on a button', ephemeral: true });
+                        return;
+                    }
+                    if (getRoles(interaction.guildId, messageId, buttonId).indexOf(role.id) !== -1) {
+                        interaction.reply({ content: 'Error: Role is already assigned to this button', ephemeral: true });
                         return;
                     }
                     addRole(interaction.guildId, messageId, buttonId, role.id);
