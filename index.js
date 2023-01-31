@@ -123,6 +123,19 @@ function removeRole(guildId, messageId, buttonId, roleId) {
     saveData(guildId);
 }
 
+function getRoleCount(guildId, messageId, buttonId) {
+    try {
+        let guildData = serverData.get(guildId);
+        let allMessageData = guildData['messages'];
+        let thisMessageData = allMessageData[messageId];
+        let buttonData = thisMessageData[buttonId];
+        let roleData = buttonData['roles'];
+        return roleData.length;
+    } catch (e) {
+        return 0;
+    }
+}
+
 // Command handler
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) {
@@ -273,6 +286,10 @@ client.on('interactionCreate', async (interaction) => {
                 const role = interaction.options.getRole('role');
 
                 if (subcommand === 'add') {
+                    if (getRoleCount(interaction.guildId, messageId, buttonId) >= 25) {
+                        interaction.reply({ content: 'Error: Maximum of 25 roles on a button', ephemeral: true });
+                        return;
+                    }
                     addRole(interaction.guildId, messageId, buttonId, role.id);
                     interaction.reply({ content: 'Done!', ephemeral: true });
                 } else if (subcommand === 'remove') {
