@@ -396,6 +396,13 @@ client.on('interactionCreate', async (interaction) => {
     const buttonId = interaction.customId;
     const serverRules = serverData.get(interaction.guildId);
 
+    // Make sure there's server rules
+    if (serverRules === undefined) {
+        interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
+        return;
+    }
+
+
     // Make sure there's a messages list to handle
     if (!serverRules.hasOwnProperty('messages')) {
         interaction.reply({ content: 'This button has not been setup, contact server administration', ephemeral: true });
