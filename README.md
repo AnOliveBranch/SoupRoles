@@ -1,6 +1,6 @@
 # Getting Started
 
-[Click here](https://discord.com/api/oauth2/authorize?client_id=1069718385258156096&permissions=268437504&scope=bot) to add the bot to your server. It requires the `Manage Roles` and `Send Messages` permissions. Make sure the bot's highest role is above any roles you want it to be able to assign in the role hierarchy. The bot will also need permission to send messages in any channel you want to create an embed in.
+[Click here](https://discord.com/api/oauth2/authorize?client_id=1069718385258156096&permissions=268437504&scope=bot%20applications.commands) to add the bot to your server. It requires the `Manage Roles` and `Send Messages` permissions. Make sure the bot's highest role is above any roles you want it to be able to assign in the role hierarchy. The bot will also need permission to send messages in any channel you want to create an embed in.
 
 Start by making an embed, using the [/embed create](#embed-create) command
 
