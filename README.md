@@ -12,6 +12,8 @@ Optionally, add an embed to the button as well using [/role embed set](#role-emb
 
 A single message can have multiple buttons, up to 25. This is a limitation of Discord itself. Each button can be used for its own role menu (with up to 25 role options), allowing for up to 25 different role menus on a single message.
 
+You'll need Discord developer mode enabled to get the message ID to use the bot. In the Discord client, go to Settings -> Advanced -> Developer Mode to enable it
+
 # Command Usage
 
 ## Embed Command
