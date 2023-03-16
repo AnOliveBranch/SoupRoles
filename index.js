@@ -181,6 +181,17 @@ client.on('interactionCreate', async (interaction) => {
             if (
                 !channel
                     .permissionsFor(interaction.guild.members.me)
+                    .has('ViewChannel')
+            ) {
+                interaction.reply({
+                    content: 'Error: No permission to view this channel',
+                    ephemeral: true
+                });
+                return;
+            }
+            if (
+                !channel
+                    .permissionsFor(interaction.guild.members.me)
                     .has('SendMessages')
             ) {
                 interaction.reply({
