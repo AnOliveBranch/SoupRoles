@@ -73,7 +73,7 @@ const commands = [
             subcommand
                 .setName('create')
                 .setDescription('Creates a button on a message')
-                .addStringOption((option) =>
+                .addIntegerOption((option) =>
                     option
                         .setName('message')
                         .setDescription(
@@ -98,7 +98,7 @@ const commands = [
             subcommand
                 .setName('update')
                 .setDescription('Updates a button on a message')
-                .addStringOption((option) =>
+                .addIntegerOption((option) =>
                     option
                         .setName('message')
                         .setDescription(
@@ -123,7 +123,7 @@ const commands = [
             subcommand
                 .setName('delete')
                 .setDescription('Deletes a button on a message')
-                .addStringOption((option) =>
+                .addIntegerOption((option) =>
                     option
                         .setName('message')
                         .setDescription(
@@ -142,7 +142,7 @@ const commands = [
             subcommand
                 .setName('get')
                 .setDescription('Gets all buttons on a message')
-                .addStringOption((option) =>
+                .addIntegerOption((option) =>
                     option
                         .setName('message')
                         .setDescription(
@@ -164,7 +164,7 @@ const commands = [
                     subcommand
                         .setName('set')
                         .setDescription('Set an embed for a button')
-                        .addStringOption((option) =>
+                        .addIntegerOption((option) =>
                             option
                                 .setName('message')
                                 .setDescription(
@@ -201,7 +201,7 @@ const commands = [
                     subcommand
                         .setName('delete')
                         .setDescription('Delete an embed for a button')
-                        .addStringOption((option) =>
+                        .addIntegerOption((option) =>
                             option
                                 .setName('message')
                                 .setDescription(
@@ -227,7 +227,7 @@ const commands = [
                     subcommand
                         .setName('add')
                         .setDescription("Add a role to a button's list")
-                        .addStringOption((option) =>
+                        .addIntegerOption((option) =>
                             option
                                 .setName('message')
                                 .setDescription(
@@ -254,7 +254,7 @@ const commands = [
                     subcommand
                         .setName('remove')
                         .setDescription("Remove a role from a button's list")
-                        .addStringOption((option) =>
+                        .addIntegerOption((option) =>
                             option
                                 .setName('message')
                                 .setDescription(
@@ -282,7 +282,7 @@ const commands = [
             subcommand
                 .setName('get')
                 .setDescription('Gets the current role settings for a button')
-                .addStringOption((option) =>
+                .addIntegerOption((option) =>
                     option
                         .setName('message')
                         .setDescription(
