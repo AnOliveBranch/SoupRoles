@@ -205,9 +205,19 @@ client.on('interactionCreate', async (interaction) => {
             interaction.reply({ content: 'Done!', ephemeral: true });
         } else if (subcommand === 'update') {
             const messageId = interaction.options.getString('message');
+
+            if (isNaN(messageId)) {
+                interaction.reply({
+                    content: `Error: Could not find message with ID ${messageId}`,
+                    ephemeral: true
+                });
+                return;
+            }
+
             channel.messages
-                .fetch(messageId)
-                .then((message) => {
+                .fetch({ limit: 1, around: messageId, cache: false })
+                .then((messages) => {
+                    let message = messages.at(0);
                     if (message.author.id !== client.user.id) {
                         interaction.reply({
                             content:
@@ -234,6 +244,14 @@ client.on('interactionCreate', async (interaction) => {
         const buttonId = interaction.options.getString('id');
         const messageId = interaction.options.getString('message');
         const channel = interaction.channel;
+
+        if (isNaN(messageId)) {
+            interaction.reply({
+                content: `Error: Could not find message with ID ${messageId}`,
+                ephemeral: true
+            });
+            return;
+        }
 
         channel.messages
             .fetch({ limit: 1, around: messageId, cache: false })
@@ -326,6 +344,14 @@ client.on('interactionCreate', async (interaction) => {
         const buttonId = interaction.options.getString('button');
         const messageId = interaction.options.getString('message');
         const channel = interaction.channel;
+
+        if (isNaN(messageId)) {
+            interaction.reply({
+                content: `Error: Could not find message with ID ${messageId}`,
+                ephemeral: true
+            });
+            return;
+        }
 
         channel.messages
             .fetch({ limit: 1, around: messageId, cache: false })
