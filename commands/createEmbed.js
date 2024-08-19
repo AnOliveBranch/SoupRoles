@@ -1,3 +1,11 @@
+const log4js = require('log4js');
+const logger = log4js.getLogger('CreateEmbedCommand');
+const { logLevel, channels } = require('../config.json');
+logger.level = logLevel;
+
+const { DiscordLogger } = require('../util/DiscordLogger.js');
+const logChannel = channels['logChannelId'];
+
 const {
 	ModalBuilder,
 	ActionRowBuilder,
@@ -6,12 +14,11 @@ const {
 	SlashCommandBuilder,
 	PermissionFlagsBits
 } = require('discord.js');
-const { GuildManager } = require('../util/GuildManager.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('createembed')
-		.setDescription('Creates a new role message')
+		.setDescription('Creates a new role embed message')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.MANAGE_ROLES),
 	async execute(interaction) {
@@ -47,6 +54,8 @@ module.exports = {
 
 		// Add action rows to modal
 		modal.addComponents(actionRowOne, actionRowTwo, actionRowThree);
+
+		logger.debug('Sent modal for creating new embed');
 
 		// Show modal
 		await interaction.showModal(modal);
