@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const logger = log4js.getLogger('AddButtonCommand');
+const logger = log4js.getLogger('EditEmbedCommand');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
@@ -15,51 +15,64 @@ const {
 	ApplicationCommandType,
 	PermissionFlagsBits
 } = require('discord.js');
-const { getComponents } = require('../util/utils');
 
 module.exports = {
 	data: new ContextMenuCommandBuilder()
-		.setName('Add Button')
+		.setName('Edit Embed')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.MANAGE_ROLES)
 		.setType(ApplicationCommandType.Message),
 	async execute(interaction) {
-		logger.trace('Got context menu interaction');
 		const message = interaction.targetMessage;
 		if (message.author.id !== interaction.client.user.id) {
 			interaction.reply({
-				content: 'Can only add buttons on messages from SoupRoles!',
+				content: 'Can only edit messages from SoupRoles!',
 				ephemeral: true
 			});
 			return;
 		}
 
-		const buttons = getComponents(message);
-		if (buttons.length >= 25) {
+		// Get current embed
+		const embeds = message.embeds;
+		if (embeds.length === 0) {
 			interaction.reply({
-				content: 'Can only have up to 25 buttons on a message!',
+				content: 'No embed to edit!',
 				ephemeral: true
 			});
+			return;
+		} else if (embeds.length > 1) {
+			interaction.reply({
+				content: 'Too many embeds on this message!',
+				ephemeral: true
+			});
+			return;
 		}
 
+		const embed = embeds[0];
+
 		// Build modal
-		const modal = new ModalBuilder()
-			.setCustomId('buttonCreateModal')
-			.setTitle('Create a new button');
+		const modal = new ModalBuilder().setCustomId('embedEditModal').setTitle('Edits an embed');
 
 		// Build title input
 		const titleInput = new TextInputBuilder()
-			.setCustomId('buttonTitle')
-			.setLabel('Button Title')
+			.setCustomId('embedTitle')
+			.setLabel('New Embed Title')
 			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Pronouns');
+			.setValue(embed.data.title);
 
-		// Build button ID input
-		const buttonIdInput = new TextInputBuilder()
-			.setCustomId('buttonId')
-			.setLabel('Button ID')
+		// Build body text input
+		const bodyTextInput = new TextInputBuilder()
+			.setCustomId('embedBody')
+			.setLabel('New Embed Body')
+			.setStyle(TextInputStyle.Paragraph)
+			.setValue(embed.data.description);
+
+		// Build color input
+		const colorInput = new TextInputBuilder()
+			.setCustomId('embedColor')
+			.setLabel('New Embed Color')
 			.setStyle(TextInputStyle.Short)
-			.setPlaceholder(`pronounButton`);
+			.setValue(embed.data.hexColor ?? 'None');
 
 		// Build button ID input
 		const messageIdInput = new TextInputBuilder()
@@ -70,13 +83,14 @@ module.exports = {
 
 		// Create action rows
 		const actionRowOne = new ActionRowBuilder().addComponents(titleInput);
-		const actionRowTwo = new ActionRowBuilder().addComponents(buttonIdInput);
-		const actionRowThree = new ActionRowBuilder().addComponents(messageIdInput);
+		const actionRowTwo = new ActionRowBuilder().addComponents(bodyTextInput);
+		const actionRowThree = new ActionRowBuilder().addComponents(colorInput);
+		const actionRowFour = new ActionRowBuilder().addComponents(messageIdInput);
 
 		// Add action rows to modal
-		modal.addComponents(actionRowOne, actionRowTwo, actionRowThree);
+		modal.addComponents(actionRowOne, actionRowTwo, actionRowThree, actionRowFour);
 
-		logger.debug('Sent modal for adding a button to a message');
+		logger.debug('Sent modal for editing an embed');
 
 		// Show modal
 		await interaction.showModal(modal);

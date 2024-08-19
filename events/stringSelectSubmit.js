@@ -6,7 +6,13 @@ logger.level = logLevel;
 const { DiscordLogger } = require('../util/DiscordLogger.js');
 const logChannel = channels['logChannelId'];
 
-const { Events } = require('discord.js');
+const {
+	Events,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+	ActionRowBuilder
+} = require('discord.js');
 const { getComponents, buildActionRows } = require('../util/utils');
 
 module.exports = {
@@ -14,20 +20,20 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isStringSelectMenu()) return;
 
-		await interaction.deferReply({ ephemeral: true });
-
-		const client = interaction.client;
-		const discordLogger = new DiscordLogger(client, logChannel);
-		try {
-			await discordLogger.init();
-		} catch (error) {
-			logger.warn(`Failed to initialize DiscordLogger`);
-		}
-
 		const menuId = interaction.customId;
 		const selection = interaction.values;
 
 		if (menuId === 'buttonDeleteMenu') {
+			await interaction.deferReply({ ephemeral: true });
+
+			const client = interaction.client;
+			const discordLogger = new DiscordLogger(client, logChannel);
+			try {
+				await discordLogger.init();
+			} catch (error) {
+				logger.warn(`Failed to initialize DiscordLogger`);
+			}
+
 			const message = interaction.message;
 			const embeds = message.embeds;
 			if (embeds.length !== 1) {
@@ -40,11 +46,9 @@ module.exports = {
 			const embed = embeds[0];
 			const messageID = embed.footer.text.split('ID: ')[1];
 
-			interaction.channel
+			interaction.channel.messages
 				.fetch(messageID)
 				.then((message) => {
-					logger.debug(message);
-
 					const buttons = getComponents(message);
 					let newList = [];
 					buttons.forEach((button) => {
@@ -52,9 +56,28 @@ module.exports = {
 							newList.push(button);
 						}
 					});
-					const components = buildActionRows(newList);
-					message.edit({ components: components });
-					interaction.editReply('Deleted the button(s) from the message');
+
+					let components;
+					if (newList.length === 0) {
+						components = [];
+					} else {
+						components = buildActionRows(newList);
+					}
+
+					message
+						.edit({ components: components })
+						.then(() => {
+							interaction.editReply('Deleted the button(s) from the message');
+						})
+						.catch((error) => {
+							logger.error(error);
+							interaction.editReply(
+								'Failed to delete the button(s) from the message. Contact staff if the issue persists.'
+							);
+							discordLogger.logMessage('Failed to delete button(s)!').then(() => {
+								discordLogger.logMessage(error);
+							});
+						});
 				})
 				.catch((error) => {
 					interaction.editReply('Failed to fetch message!');
@@ -63,6 +86,58 @@ module.exports = {
 						discordLogger.logMessage(error);
 					});
 				});
+		} else if (menuId === 'buttonEditMenu') {
+			const message = interaction.message;
+			const embeds = message.embeds;
+			if (embeds.length !== 1) {
+				interaction.reply({
+					content: 'Encountered an error fetching message. Contact staff if the issue persists.',
+					ephemeral: true
+				});
+				return;
+			}
+
+			const embed = embeds[0];
+			const messageID = embed.footer.text.split('ID: ')[1];
+
+			// Build modal
+			const modal = new ModalBuilder()
+				.setCustomId('buttonEditModal')
+				.setTitle('Edits a button title');
+
+			// Build title input
+			const titleInput = new TextInputBuilder()
+				.setCustomId('buttonTitle')
+				.setLabel('Button Title')
+				.setStyle(TextInputStyle.Short)
+				.setPlaceholder('New role title');
+
+			// Build button ID input
+			const buttonIdInput = new TextInputBuilder()
+				.setCustomId('buttonId')
+				.setLabel('Button ID (do not edit)')
+				.setStyle(TextInputStyle.Short)
+				.setValue(selection[0]);
+
+			// Build button ID input
+			const messageIdInput = new TextInputBuilder()
+				.setCustomId('messageId')
+				.setLabel('Message ID (do not edit)')
+				.setStyle(TextInputStyle.Short)
+				.setValue(messageID);
+
+			// Create action rows
+			const actionRowOne = new ActionRowBuilder().addComponents(titleInput);
+			const actionRowTwo = new ActionRowBuilder().addComponents(buttonIdInput);
+			const actionRowThree = new ActionRowBuilder().addComponents(messageIdInput);
+
+			// Add action rows to modal
+			modal.addComponents(actionRowOne, actionRowTwo, actionRowThree);
+
+			logger.debug('Sent modal for editing a button');
+
+			// Show modal
+			await interaction.showModal(modal);
 		}
 	}
 };

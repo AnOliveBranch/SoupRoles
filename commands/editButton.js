@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const logger = log4js.getLogger('DeleteButtonCommand');
+const logger = log4js.getLogger('EditButtonCommand');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
@@ -18,7 +18,7 @@ const { getComponents } = require('../util/utils');
 
 module.exports = {
 	data: new ContextMenuCommandBuilder()
-		.setName('Delete Button(s)')
+		.setName('Edit Button')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.MANAGE_ROLES)
 		.setType(ApplicationCommandType.Message),
@@ -36,16 +36,16 @@ module.exports = {
 
 		const buttons = getComponents(message);
 		if (buttons.length === 0) {
-			interaction.reply({ content: 'No buttons to delete on this message!', ephemeral: true });
+			interaction.reply({ content: 'No buttons to edit on this message!', ephemeral: true });
 			return;
 		}
 		const row = new ActionRowBuilder();
 
 		const menuBuilder = new StringSelectMenuBuilder()
-			.setCustomId('buttonDeleteMenu')
-			.setPlaceholder('Select the button(s) to delete')
+			.setCustomId('buttonEditMenu')
+			.setPlaceholder('Select the button to edit')
 			.setMinValues(1)
-			.setMaxValues(buttons.length);
+			.setMaxValues(1);
 
 		buttons.forEach((button) => {
 			menuBuilder.addOptions({
@@ -56,11 +56,11 @@ module.exports = {
 
 		row.addComponents(menuBuilder);
 
-		const deleteEmbed = new EmbedBuilder()
-			.setTitle('Delete button(s)')
-			.setDescription('Select the buttons to delete from the dropdown below')
-			.setColor('#ff0000')
+		const editEmbed = new EmbedBuilder()
+			.setTitle('Edit button')
+			.setDescription('Select the button to edit from the dropdown below')
+			.setColor('#ffff00')
 			.setFooter({ text: `ID: ${message.id}` });
-		interaction.reply({ embeds: [deleteEmbed], components: [row], ephemeral: true });
+		interaction.reply({ embeds: [editEmbed], components: [row], ephemeral: true });
 	}
 };
