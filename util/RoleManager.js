@@ -106,12 +106,12 @@ class RoleManager {
 			throw new Error('The data was null');
 		}
 		const messageData = data[message];
-		if (messageData === undefined) {
+		if (!messageData) {
 			throw new Error('No data for message');
 		}
 
 		const buttonData = messageData[button];
-		if (buttonData === undefined) {
+		if (!buttonData) {
 			throw new Error('No data for button');
 		}
 		logger.trace('Printing button data');
@@ -122,34 +122,24 @@ class RoleManager {
 	/**
 	 * Sets a list of roles to associate with a button on a message
 	 * @param {String} message The message ID
-	 * @param {*} button The button's custom ID
-	 * @param {*} roles A list of role IDs
+	 * @param {String} button The button's custom ID
+	 * @param {String[]} roles A list of role IDs
 	 */
 	async setRoles(message, button, roles) {
 		logger.trace(`Setting roles ${roles} for button ${button} on message ${message}`);
 		let data = await this.readDataFile();
 		logger.trace(`Got the data`);
 		logger.debug(data);
+
 		if (data === null) {
 			throw new Error('The data was null');
 		}
 
-		let messageData = data[message];
-		if (messageData === undefined) {
-			let buttonData = roles;
-			messageData = {};
-			messageData[button] = buttonData;
-			data[message] = messageData;
-		} else {
-			let buttonData = messageData[button];
-			if (buttonData === undefined) {
-				buttonData = roles;
-				messageData[button] = buttonData;
-				data[message] = messageData;
-			} else {
-				data[message][button] = roles;
-			}
+		if (!data[message]) {
+			data[message] = {};
 		}
+
+		data[message][button] = roles;
 
 		this.writeDataFile(data)
 			.then(() => {
