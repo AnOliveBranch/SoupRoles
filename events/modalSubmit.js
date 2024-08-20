@@ -3,7 +3,7 @@ const logger = log4js.getLogger('MessageContextMenuEvent');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
-const { DiscordLogger } = require('../util/DiscordLogger.js');
+const { DiscordLogger } = require('../util/DiscordLogger');
 const logChannel = channels['logChannelId'];
 
 const { Events, EmbedBuilder, ButtonStyle, ButtonBuilder } = require('discord.js');

@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const logger = log4js.getLogger('EditButtonCommand');
+const logger = log4js.getLogger('SetRolesCommand');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
@@ -18,7 +18,7 @@ const { getComponents } = require('../util/utils');
 
 module.exports = {
 	data: new ContextMenuCommandBuilder()
-		.setName('Edit Button')
+		.setName('Set Roles')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.MANAGE_ROLES)
 		.setType(ApplicationCommandType.Message),
@@ -28,7 +28,7 @@ module.exports = {
 
 		if (message.author.id !== interaction.client.user.id) {
 			interaction.reply({
-				content: 'Can only delete buttons on messages from SoupRoles!',
+				content: 'Can only set roles on messages from SoupRoles!',
 				ephemeral: true
 			});
 			return;
@@ -36,14 +36,17 @@ module.exports = {
 
 		const buttons = getComponents(message);
 		if (buttons.length === 0) {
-			interaction.reply({ content: 'No buttons to edit on this message!', ephemeral: true });
+			interaction.reply({
+				content: 'No buttons to set roles for on this message!',
+				ephemeral: true
+			});
 			return;
 		}
 		const row = new ActionRowBuilder();
 
 		const menuBuilder = new StringSelectMenuBuilder()
-			.setCustomId('buttonEditMenu')
-			.setPlaceholder('Select the button to edit')
+			.setCustomId('buttonSelectMenu')
+			.setPlaceholder('Select the button to set roles for')
 			.setMinValues(1)
 			.setMaxValues(1);
 
@@ -57,9 +60,9 @@ module.exports = {
 		row.addComponents(menuBuilder);
 
 		const editEmbed = new EmbedBuilder()
-			.setTitle('Edit button')
-			.setDescription('Select the button to edit from the dropdown below')
-			.setColor('#ffff00')
+			.setTitle('Set roles')
+			.setDescription('Select the button to set roles for from the dropdown below')
+			.setColor('#00ff00')
 			.setFooter({ text: `ID: ${message.id}` });
 		interaction.reply({ embeds: [editEmbed], components: [row], ephemeral: true });
 	}

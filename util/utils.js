@@ -1,4 +1,10 @@
-const { Message, Component, ButtonComponent, ActionRowBuilder } = require('discord.js');
+const {
+	Message,
+	Component,
+	ButtonComponent,
+	ActionRowBuilder,
+	StringSelectMenuBuilder
+} = require('discord.js');
 
 /**
  * Gets a list of components on a message
@@ -39,7 +45,35 @@ function buildActionRows(...buttons) {
 	return rows;
 }
 
+function buildMenuComponents(roles, memberRoles, buttonId) {
+	let row = new ActionRowBuilder();
+	let menuBuilder = new StringSelectMenuBuilder()
+		.setCustomId(`roles.${buttonId}`)
+		.setPlaceholder('Select role(s)')
+		.setMaxValues(roles.length)
+		.setMinValues(0);
+
+	roles.forEach((role) => {
+		if (memberRoles.has(role.id)) {
+			menuBuilder.addOptions({
+				label: role.name,
+				value: role.id,
+				default: true
+			});
+		} else {
+			menuBuilder.addOptions({
+				label: role.name,
+				value: role.id
+			});
+		}
+	});
+
+	row.addComponents(menuBuilder);
+	return row;
+}
+
 module.exports = {
 	getComponents,
-	buildActionRows
+	buildActionRows,
+	buildMenuComponents
 };

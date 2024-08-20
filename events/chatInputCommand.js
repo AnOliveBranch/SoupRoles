@@ -3,7 +3,7 @@ const logger = log4js.getLogger('CommandInteractionEvent');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
-const { DiscordLogger } = require('../util/DiscordLogger.js');
+const { DiscordLogger } = require('../util/DiscordLogger');
 const logChannel = channels['logChannelId'];
 
 const { Events } = require('discord.js');
