@@ -163,6 +163,18 @@ module.exports = {
 			// Show modal
 			await interaction.showModal(modal);
 		} else if (menuId === 'buttonSelectMenu') {
+			const roleManager = new RoleManager();
+			try {
+				await roleManager.init();
+			} catch (error) {
+				logger.error(`Failed to initialize RoleManager`);
+				interaction.reply({
+					content: 'Failed to get roles! Contact staff if the issue persists.',
+					ephemeral: true
+				});
+				return;
+			}
+
 			const message = interaction.message;
 			const embeds = message.embeds;
 			if (embeds.length !== 1) {
@@ -184,15 +196,31 @@ module.exports = {
 
 			const row = new ActionRowBuilder();
 
-			const menuBuilder = new RoleSelectMenuBuilder()
-				.setCustomId('roleSelectMenu')
-				.setPlaceholder('Select the roles to set for the button')
-				.setMinValues(1)
-				.setMaxValues(25);
+			roleManager
+				.getRoles(messageID, selection[0])
+				.then((roles) => {
+					const menuBuilder = new RoleSelectMenuBuilder()
+						.setCustomId('roleSelectMenu')
+						.setPlaceholder('Select the roles to set for the button')
+						.setMinValues(1)
+						.setMaxValues(25)
+						.setDefaultRoles(roles);
 
-			row.addComponents(menuBuilder);
+					row.addComponents(menuBuilder);
 
-			interaction.reply({ embeds: [roleSelectEmbed], components: [row], ephemeral: true });
+					interaction.reply({ embeds: [roleSelectEmbed], components: [row], ephemeral: true });
+				})
+				.catch((error) => {
+					const menuBuilder = new RoleSelectMenuBuilder()
+						.setCustomId('roleSelectMenu')
+						.setPlaceholder('Select the roles to set for the button')
+						.setMinValues(1)
+						.setMaxValues(25);
+
+					row.addComponents(menuBuilder);
+
+					interaction.reply({ embeds: [roleSelectEmbed], components: [row], ephemeral: true });
+				});
 		} else if (menuId.startsWith('roles.')) {
 			await interaction.deferReply({ ephemeral: true });
 
