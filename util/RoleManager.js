@@ -81,9 +81,14 @@ class RoleManager {
 	 */
 	async writeDataFile(data) {
 		const dataFile = path.join(__dirname, '..', 'data', 'roleData.json');
-		await fsPromises.writeFile(dataFile, JSON.stringify(data)).catch((error) => {
-			logger.error(error);
-		});
+		await fsPromises
+			.writeFile(dataFile, JSON.stringify(data))
+			.then(() => {
+				logger.trace('Wrote data file');
+			})
+			.catch((error) => {
+				logger.error(error);
+			});
 	}
 
 	/**
@@ -135,8 +140,6 @@ class RoleManager {
 			messageData = {};
 			messageData[button] = buttonData;
 			data[message] = messageData;
-
-			return;
 		} else {
 			let buttonData = messageData[button];
 			if (buttonData === undefined) {
@@ -148,10 +151,14 @@ class RoleManager {
 			}
 		}
 
-		this.writeDataFile(data).catch((error) => {
-			logger.error(error);
-			throw new Error('Failed to write data file');
-		});
+		this.writeDataFile(data)
+			.then(() => {
+				logger.debug('Successfully saved roles');
+			})
+			.catch((error) => {
+				logger.error(error);
+				throw new Error('Failed to write data file');
+			});
 	}
 
 	async deleteButton(message, button) {}
