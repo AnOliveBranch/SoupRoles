@@ -13,9 +13,11 @@ let roleDataContent = {};
 const files = fs.readdirSync(dataFolder);
 files.forEach((fileName) => {
 	if (fileName.endsWith('.yml')) {
-		const content = fs.readFileSync(path.join(__dirname, '.', 'data', fileName));
+		const filePath = path.join(__dirname, '.', 'data', fileName);
+		const content = fs.readFileSync(filePath);
 		const messageData = yaml.load(content)['messages'];
 		if (messageData === undefined) {
+			fs.rmSync(filePath);
 			return;
 		}
 		Object.entries(messageData).forEach((message) => {
@@ -23,19 +25,16 @@ files.forEach((fileName) => {
 			Object.entries(buttons).forEach((button) => {
 				const [buttonId, roles] = button;
 				const roleData = roles['roles'];
+				logger.debug(messageId);
 				logger.debug(buttonId);
-				let buttonData = roleData;
-				logger.debug(buttonData);
-				let newMessageData = {};
-				newMessageData[buttonId] = buttonData;
-				logger.debug(newMessageData);
+				logger.debug(roles);
 				if (!roleDataContent[messageId]) {
 					roleDataContent[messageId] = {};
 				}
 				roleDataContent[messageId][buttonId] = roleData;
-				// logger.debug(roleDataContent);
 			});
 		});
+		fs.rmSync(filePath);
 	}
 });
 
