@@ -6,7 +6,6 @@ logger.level = logLevel;
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('node:path');
-const { RoleManager } = require('./util/RoleManager');
 
 const dataFolder = path.join(__dirname, '.', 'data');
 const dataFile = path.join(__dirname, '.', 'data', 'roleData.json');
