@@ -39,6 +39,7 @@ module.exports = {
 			interaction.reply({ content: 'No buttons to delete on this message!', ephemeral: true });
 			return;
 		}
+
 		const row = new ActionRowBuilder();
 
 		const menuBuilder = new StringSelectMenuBuilder()

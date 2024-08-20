@@ -15,6 +15,14 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isButton()) return;
 
+		const client = interaction.client;
+		const discordLogger = new DiscordLogger(client, logChannel);
+		try {
+			await discordLogger.init();
+		} catch (error) {
+			logger.warn(`Failed to initialize DiscordLogger`);
+		}
+
 		const roleManager = new RoleManager();
 		try {
 			await roleManager.init();
@@ -43,7 +51,11 @@ module.exports = {
 							}
 						});
 
-						if (roles.length === 0) {
+						const component = buildMenuComponents(roles, interaction.member.roles.cache, buttonId);
+						interaction.reply({ components: [component], ephemeral: true });
+					})
+					.catch((error) => {
+						if (error == 'Error: No data for message' || error == 'Error: No data for button') {
 							interaction.reply({
 								content:
 									'No roles are assigned to this button yet! Contact staff to have them set it up',
@@ -51,11 +63,6 @@ module.exports = {
 							});
 							return;
 						}
-
-						const component = buildMenuComponents(roles, interaction.member.roles.cache, buttonId);
-						interaction.reply({ components: [component], ephemeral: true });
-					})
-					.catch((error) => {
 						logger.error(error);
 						interaction.reply({
 							content: 'Failed to get roles! Contact staff if the issue persists.',

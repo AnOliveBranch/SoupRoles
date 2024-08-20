@@ -3,7 +3,9 @@ const {
 	Component,
 	ButtonComponent,
 	ActionRowBuilder,
-	StringSelectMenuBuilder
+	StringSelectMenuBuilder,
+	ButtonStyle,
+	ButtonBuilder
 } = require('discord.js');
 
 /**
@@ -46,8 +48,8 @@ function buildActionRows(...buttons) {
 }
 
 function buildMenuComponents(roles, memberRoles, buttonId) {
-	let row = new ActionRowBuilder();
-	let menuBuilder = new StringSelectMenuBuilder()
+	const row = new ActionRowBuilder();
+	const menuBuilder = new StringSelectMenuBuilder()
 		.setCustomId(`roles.${buttonId}`)
 		.setPlaceholder('Select role(s)')
 		.setMaxValues(roles.length)

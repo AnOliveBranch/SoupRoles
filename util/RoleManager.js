@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const logger = log4js.getLogger('StringSelectEvent');
+const logger = log4js.getLogger('RoleManager');
 const { logLevel, channels } = require('../config.json');
 logger.level = logLevel;
 
@@ -61,18 +61,57 @@ class RoleManager {
 	}
 
 	/**
+	 * Reads the data file
+	 * @returns {Object} The JSON object of the data file
+	 */
+	async readDataFile() {
+		const dataFile = path.join(__dirname, '..', 'data', 'roleData.json');
+		const data = await fsPromises.readFile(dataFile);
+		try {
+			return JSON.parse(data);
+		} catch (error) {
+			logger.error(error);
+			return null;
+		}
+	}
+
+	/**
+	 * Writes data to the file
+	 * @param {Object} data The JSON object to write
+	 */
+	async writeDataFile(data) {
+		const dataFile = path.join(__dirname, '..', 'data', 'roleData.json');
+		await fsPromises.writeFile(dataFile, JSON.stringify(data)).catch((error) => {
+			logger.error(error);
+		});
+	}
+
+	/**
 	 * Returns a list of roles associated with the message and button
 	 * @param {String} message The message ID
 	 * @param {String} button The button's custom ID
 	 * @returns {String[]} The role IDs
 	 */
 	async getRoles(message, button) {
-		return [
-			'1069320267962269726',
-			'1069320239524884571',
-			'1069320287725822013',
-			'1069320308600864788'
-		];
+		logger.trace(`Getting roles for button ${button} on message ${message}`);
+		const data = await this.readDataFile();
+		logger.trace(`Got the data`);
+		logger.debug(data);
+		if (data === null) {
+			throw new Error('The data was null');
+		}
+		const messageData = data[message];
+		if (messageData === undefined) {
+			throw new Error('No data for message');
+		}
+
+		const buttonData = messageData[button];
+		if (buttonData === undefined) {
+			throw new Error('No data for button');
+		}
+		logger.trace('Printing button data');
+		logger.debug(buttonData);
+		return buttonData;
 	}
 
 	/**
@@ -81,11 +120,41 @@ class RoleManager {
 	 * @param {*} button The button's custom ID
 	 * @param {*} roles A list of role IDs
 	 */
-	async setRoles(message, button, roles) {}
+	async setRoles(message, button, roles) {
+		logger.trace(`Setting roles ${roles} for button ${button} on message ${message}`);
+		let data = await this.readDataFile();
+		logger.trace(`Got the data`);
+		logger.debug(data);
+		if (data === null) {
+			throw new Error('The data was null');
+		}
+
+		let messageData = data[message];
+		if (messageData === undefined) {
+			let buttonData = roles;
+			messageData = {};
+			messageData[button] = buttonData;
+			data[message] = messageData;
+
+			return;
+		} else {
+			let buttonData = messageData[button];
+			if (buttonData === undefined) {
+				buttonData = roles;
+				messageData[button] = buttonData;
+				data[message] = messageData;
+			} else {
+				data[message][button] = roles;
+			}
+		}
+
+		this.writeDataFile(data).catch((error) => {
+			logger.error(error);
+			throw new Error('Failed to write data file');
+		});
+	}
 
 	async deleteButton(message, button) {}
-
-	async deleteMessage(message) {}
 }
 
 module.exports = {

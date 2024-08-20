@@ -37,6 +37,14 @@ module.exports = {
 				logger.warn(`Failed to initialize DiscordLogger`);
 			}
 
+			const roleManager = new RoleManager();
+			try {
+				await roleManager.init();
+			} catch (error) {
+				logger.error(`Failed to initialize RoleManager`);
+				discordLogger.logMessage('Failed to initialize RoleManager');
+			}
+
 			const message = interaction.message;
 			const embeds = message.embeds;
 			if (embeds.length !== 1) {
@@ -54,9 +62,12 @@ module.exports = {
 				.then((message) => {
 					const buttons = getComponents(message);
 					let newList = [];
+					let deleted = [];
 					buttons.forEach((button) => {
 						if (!selection.includes(button.data.custom_id)) {
 							newList.push(button);
+						} else {
+							deleted.push(button);
 						}
 					});
 
@@ -71,6 +82,16 @@ module.exports = {
 						.edit({ components: components })
 						.then(() => {
 							interaction.editReply('Deleted the button(s) from the message');
+							if (roleManager.getStatus() === 'init') {
+								deleted.forEach((button) => {
+									roleManager.deleteButton(messageID, button.data.custom_id).catch((error) => {
+										logger.warn(error);
+										discordLogger.logMessage(
+											`Failed to delete button ${button.data.custom_id} from message ${messageID} in storage`
+										);
+									});
+								});
+							}
 						})
 						.catch((error) => {
 							logger.error(error);
@@ -200,7 +221,7 @@ module.exports = {
 
 			const buttonId = menuId.split('roles.')[1];
 			roleManager
-				.getRoles(interaction.message.reference.id, buttonId)
+				.getRoles(interaction.message.reference.messageId, buttonId)
 				.then(async (storedRoles) => {
 					const member = interaction.member;
 					const selfMember = interaction.guild.members.me;
@@ -221,14 +242,44 @@ module.exports = {
 							if (!member.roles.cache.has(roleId)) {
 								addedRoles += `<@&${roleId}>\n`;
 								member.roles.add(roleId).catch((error) => {
-									logger.error(error);
+									if (error.code === 50013) {
+										interaction.followUp({
+											content: `Failed to apply role <@&${roleId}>. No permission`,
+											ephemeral: true
+										});
+										discordLogger.logMessage(`Failed to apply role ${roleId}! No permissions`);
+									} else {
+										logger.error(error);
+										interaction.followUp({
+											content: `Failed to apply role <@&${roleId}>`,
+											ephemeral: true
+										});
+										discordLogger.logMessage(`Failed to apply role ${roleId}!`).then(() => {
+											discordLogger.reply(error);
+										});
+									}
 								});
 							}
 						} else {
 							if (member.roles.cache.has(roleId)) {
 								removedRoles += `<@&${roleId}>\n`;
 								member.roles.remove(roleId).catch((error) => {
-									logger.error(error);
+									if (error.code === 50013) {
+										interaction.followUp({
+											content: `Failed to remove role <@&${roleId}>. No permission`,
+											ephemeral: true
+										});
+										discordLogger.logMessage(`Failed to remove role ${roleId}! No permissions`);
+									} else {
+										logger.error(error);
+										interaction.followUp({
+											content: `Failed to remove role <@&${roleId}>`,
+											ephemeral: true
+										});
+										discordLogger.logMessage(`Failed to remove role ${roleId}!`).then(() => {
+											discordLogger.reply(error);
+										});
+									}
 								});
 							}
 						}
@@ -257,10 +308,7 @@ module.exports = {
 				})
 				.catch((error) => {
 					logger.error(error);
-					interaction.reply({
-						content: 'Failed to get roles! Contact staff if the issue persists.',
-						ephemeral: true
-					});
+					interaction.editReply('Failed to get roles! Contact staff if the issue persists.');
 					discordLogger.logMessage('An error occurred getting roles!').then(() => {
 						discordLogger.logMessage(error);
 					});

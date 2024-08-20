@@ -6,16 +6,7 @@ logger.level = logLevel;
 const { DiscordLogger } = require('../util/DiscordLogger');
 const logChannel = channels['logChannelId'];
 
-const {
-	Events,
-	ModalBuilder,
-	TextInputBuilder,
-	TextInputStyle,
-	ActionRowBuilder,
-	EmbedBuilder,
-	RoleSelectMenuBuilder
-} = require('discord.js');
-const { getComponents, buildActionRows } = require('../util/utils');
+const { Events } = require('discord.js');
 const { RoleManager } = require('../util/RoleManager');
 
 module.exports = {
