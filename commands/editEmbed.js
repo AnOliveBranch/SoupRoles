@@ -49,6 +49,9 @@ module.exports = {
 		}
 
 		const embed = embeds[0];
+		const title = embed.data.title ?? 'None';
+		const bodyText = embed.data.description ?? 'None';
+		const color = embed.data.hexColor ?? 'None';
 
 		// Build modal
 		const modal = new ModalBuilder().setCustomId('embedEditModal').setTitle('Edits an embed');
@@ -58,21 +61,21 @@ module.exports = {
 			.setCustomId('embedTitle')
 			.setLabel('New Embed Title')
 			.setStyle(TextInputStyle.Short)
-			.setValue(embed.data.title);
+			.setValue(title);
 
 		// Build body text input
 		const bodyTextInput = new TextInputBuilder()
 			.setCustomId('embedBody')
 			.setLabel('New Embed Body')
 			.setStyle(TextInputStyle.Paragraph)
-			.setValue(embed.data.description);
+			.setValue(bodyText);
 
 		// Build color input
 		const colorInput = new TextInputBuilder()
 			.setCustomId('embedColor')
 			.setLabel('New Embed Color')
 			.setStyle(TextInputStyle.Short)
-			.setValue(embed.data.hexColor ?? 'None');
+			.setValue(color);
 
 		// Build button ID input
 		const messageIdInput = new TextInputBuilder()
