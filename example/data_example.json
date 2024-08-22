@@ -1,0 +1,9 @@
+{
+	"messageId1": {
+		"buttonId1": ["roleId1", "roleId2", "roleId3"],
+		"buttonId2": ["roleId1", "roleId4"]
+	},
+	"messageId2": {
+		"buttonId3": ["roleId6"]
+	}
+}
