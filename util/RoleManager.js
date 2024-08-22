@@ -151,7 +151,36 @@ class RoleManager {
 			});
 	}
 
-	async deleteButton(message, button) {}
+	async deleteButton(message, button) {
+		let data = await this.readDataFile();
+
+		if (data === null) {
+			throw new Error('The data was null');
+		}
+
+		if (!data[message]) {
+			throw new Error('No data for message');
+		}
+
+		if (!data[message][button]) {
+			throw new Error('No data for button');
+		}
+
+		delete data[message][button];
+
+		if (Object.keys(data[message]).length === 0) {
+			delete data[message];
+		}
+
+		this.writeDataFile(data)
+			.then(() => {
+				logger.debug('Successfully deleted button');
+			})
+			.catch((error) => {
+				logger.error(error);
+				throw new Error('Failed to write data file');
+			});
+	}
 }
 
 module.exports = {
